@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "38084852153",
+    "firebase_url": "https://kooglemaps-7a9dd-default-rtdb.firebaseio.com",
+    "project_id": "kooglemaps-7a9dd",
+    "storage_bucket": "kooglemaps-7a9dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38084852153:android:f170b6b5241a7982329e68",
+        "android_client_info": {
+          "package_name": "com.example.kooglemaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38084852153-tugo87e9ohktom8eng3c3r6j5kq46bef.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyW61o8E4yLanpRY0lFrH-QoOdGFLaXcw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38084852153-tugo87e9ohktom8eng3c3r6j5kq46bef.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

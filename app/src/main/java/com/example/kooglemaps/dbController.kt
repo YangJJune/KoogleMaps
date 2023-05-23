@@ -8,8 +8,8 @@ class dbController (){
     }
 
     fun initDB(){
-        //TODO dbconnecting을 하세요
-        lateinit var tmp:ArrayList<String>
+            //TODO dbconnecting을 하세요
+        var tmp:ArrayList<String> = ArrayList()
         tmp.add("설명1")
         tmp.add("설명2")
         tmp.add("설명3")
@@ -22,7 +22,7 @@ class dbController (){
     }
 
     fun addData(key:String, d:spotData){
-        data.put(key, d)
+        //data.put(key, d)
     }
 
     fun removeData(key:String){
