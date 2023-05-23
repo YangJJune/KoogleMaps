@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         //var dbCon = dbController() //dbController
         //data = dbCon.getData()
-        table.child("dddd")
+        table.child("dddd").child("cusdad").setValue(1)
     }
 
     fun initLayout(){
