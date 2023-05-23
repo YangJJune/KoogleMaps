@@ -1,7 +1,7 @@
 package com.example.kooglemaps
 
 class dbController (){
-    private lateinit var data:HashMap<String, spotData>
+    private var data:HashMap<String, spotData> = HashMap()
 
     init{
         initDB()
@@ -22,7 +22,7 @@ class dbController (){
     }
 
     fun addData(key:String, d:spotData){
-        //data.put(key, d)
+        data.put(key, d)
     }
 
     fun removeData(key:String){
