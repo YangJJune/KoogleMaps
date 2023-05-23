@@ -2,14 +2,14 @@ package com.example.kooglemaps
 
 class dbController (){
     private lateinit var data:HashMap<String, spotData>
+
     init{
         initDB()
     }
 
     fun initDB(){
         //TODO dbconnecting을 하세요
-
-        lateinit var tmp:ArrayList<String>;
+        lateinit var tmp:ArrayList<String>
         tmp.add("설명1")
         tmp.add("설명2")
         tmp.add("설명3")
@@ -19,5 +19,13 @@ class dbController (){
 
     fun getData():HashMap<String, spotData>{
         return data;
+    }
+
+    fun addData(key:String, d:spotData){
+        data.put(key, d)
+    }
+
+    fun removeData(key:String){
+        data.remove(key)
     }
 }
