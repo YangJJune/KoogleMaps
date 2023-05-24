@@ -1,5 +1,6 @@
 package com.example.kooglemaps
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.kooglemaps.databinding.ActivityMainBinding
@@ -20,6 +21,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initLayout(){
+        binding.loginBtn.setOnClickListener {
 
+        }
+        binding.registerBtn.setOnClickListener{
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
