@@ -21,6 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity"/>
+        <activity android:name=".SpotActivity"/>
+        <activity android:name=".AddSpotActivity"/>
+
     </application>
 
 </manifest>
