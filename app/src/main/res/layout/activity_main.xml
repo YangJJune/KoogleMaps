@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!--
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
@@ -18,5 +19,18 @@
         android:layout_height="match_parent"
         android:id = "@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
+    -->
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.kooglemaps2
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,8 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import com.example.kooglemaps2.databinding.ActivityMainBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -16,26 +19,56 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity(){
     lateinit var binding :ActivityMainBinding
     lateinit var googleMap: GoogleMap
 
-    val loc = LatLng(37.554752, 126.970631)//서울역 좌표
     val konkuk_loc = LatLng(37.542402, 127.076903)
+    
+    //사용자의 현재위치 사용하기
+    var user_loc = konkuk_loc
+    //lateinit var fusedLocationProviderCilent = FusedLocationProviderClient
+
 
     //구글맵에 폴리라인 그리기 -> 위도경도 좌표의 배열이 필요하다
     val arrLoc = ArrayList<LatLng>()
+
+    val textarr = arrayListOf<String>("이미지", "리스트", "팀소개")
+    val imgarr = arrayListOf<Int>(R.drawable.baseline_location_on_24,
+        R.drawable.baseline_add_location_alt_24, R.drawable.baseline_people_24)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initmap()
 
-        initspinner()
+        initLayout()
+        //initmap()
+        //initspinner()
     }
 
+    private fun initLayout() {
+        binding.viewpager.adapter = MyViewPagerAdapter(this)
+        //main activity도 FragmentActivity에서의 파생이므로 main == this 를 인자로 넣을 수 있다.
+
+        //5. tab 과 viewPager를 중재할 mediator 생성이 필요
+        TabLayoutMediator(binding.tablayout, binding.viewpager){
+
+                tab, pos -> //tab과 position정보
+            tab.text = textarr[pos]
+
+            //7.만든 이미지 를 pos 따라 붙이기
+            tab.setIcon(imgarr[pos])
+
+        }.attach()//attach까지 해야 붙는다
+
+    }
+
+    /*
     private fun initspinner() {
         //스피너 초기화
         //스피너는 어댑터가 필요한 유닛이므로 어댑터 먼저 만든다.
@@ -102,6 +135,11 @@ class MainActivity : AppCompatActivity(){
             googleMap.setMinZoomPreference(16.0f)//zoom의 최소 레벨 설정
             googleMap.setMaxZoomPreference(22.0f)//zoom 최대 레벨 설정
 
+            //initUserLocation()
+
+
+
+
             //맵 마커
             val option = MarkerOptions()
             option.position(konkuk_loc)
@@ -111,9 +149,61 @@ class MainActivity : AppCompatActivity(){
             option.title("역")//마커의 윗쪽 큰글씨
             option.snippet("서울역")//마커의 아랫쪽 작은글씨
             googleMap.addMarker(option)?.showInfoWindow()
+
+            //맵에서 클릭한 부분의 위도,경도를 가지고 오는 이벤트처리
+            googleMap.setOnMapClickListener {
+                arrLoc.add(it)//클릭한 지점의 위도 경도를 배열에 추가한다
+
+                //맵에 그려진 폴리곤, 폴리라인 지우는 함수 googleMap.clear()
+                googleMap.clear()
+
+                //클릭한 지점에 마커 찍기
+                val clickPoint = MarkerOptions()
+                clickPoint.position(it)
+                clickPoint.icon(
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+                )
+                clickPoint.title("지금")//마커의 윗쪽 큰글씨
+                clickPoint.snippet("찍은곳")//마커의 아랫쪽 작은글씨
+                googleMap.addMarker(clickPoint)
+
+
+                //폴리라인을 그리려면 폴리라인 옵션 개체가 필요
+                //val polyOp = PolylineOptions().color(Color.GREEN).addAll(arrLoc)
+                //googleMap.addPolyline(polyOp)
+
+                //폴리곤은 그리려면(면 포함) 옵션 개체 필요
+                val polygonOp = PolygonOptions().fillColor(
+                    Color.argb(142,255,211, 100))//첫번째 인자 == 투명도, 면생상
+                    .strokeColor(Color.GREEN).addAll(arrLoc)//선의 색깔 설정
+                googleMap.addPolygon(polygonOp)
+
+                
+            }
         }
 
     }
+    */
 
+
+
+
+    /*
+    private fun initUserLocation() {
+        fusedLocationProviderCilent = LocationServices.getFusedLocationProviderClient(
+            this, getLastLocation()
+        )
+    }
+
+    private fun getLastLocation() {
+        when{
+            checkFineLocationPermission()->{
+                if(checkGPSProvider()){
+                    showGPSSetting()
+                }
+            }
+        }
+    }
+    */
 
 }
