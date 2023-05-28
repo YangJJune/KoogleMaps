@@ -20,6 +20,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initLayout(){
+        binding.loginBtn.setOnClickListener {
 
+        }
+        binding.registerBtn.setOnClickListener {
+
+        }
     }
 }
