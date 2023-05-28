@@ -23,7 +23,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="60dp"
                 app:srcCompat="?attr/homeAsUpIndicator"
-                app:tint="#39B46A" />
+                app:tint="#34A853" />
 
             <TextView
                 android:id="@+id/appTitle"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="13dp"
                 android:text="Koogle Maps"
-                android:textColor="#39B46A"
+                android:textColor="#34A853"
                 android:textSize="30sp" />
 
         </LinearLayout>
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:background="?android:attr/listDivider"
-            android:backgroundTint="#39B46A"
+            android:backgroundTint="#34A853"
             android:backgroundTintMode="add" />
 
         <LinearLayout
@@ -63,7 +63,8 @@
                 android:layout_marginLeft="200dp"
                 android:layout_marginTop="3dp"
                 android:backgroundTint="#FDFDFD"
-                app:srcCompat="@drawable/baseline_favorite_24" />
+                app:srcCompat="@drawable/baseline_favorite_24"
+                tools:ignore="SpeakableTextPresentCheck" />
             <TextView
                 android:id="@+id/favoriteNum"
                 android:layout_width="wrap_content"
@@ -81,7 +82,7 @@
             android:layout_margin="10dp"
             android:text="구글지도자리"
             android:textAlignment="center"
-            android:background="#39B46A"
+            android:background="#34A853"
             android:textSize="35sp"
             android:textStyle="bold" />
 
