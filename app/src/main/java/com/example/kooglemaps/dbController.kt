@@ -1,31 +1,46 @@
 package com.example.kooglemaps
 
+import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+
 class dbController (){
-    private lateinit var data:HashMap<String, spotData>
+    val DBConnect = Firebase.database
+    val spotTable = DBConnect.getReference("spotDB")
 
-    init{
-        initDB()
+
+    fun getData(key:String) : spotData{
+        var returnData = spotData()
+        spotTable.child(key).get().addOnSuccessListener{
+            if(it.exists()){
+                val title = it.child("title").value.toString()
+                val cord1 = it.child("cord1").value as Double
+                val cord2 = it.child("cord2").value as Double
+                val likes = it.child("likes").value as Long
+                val desc = it.child("desc").value.toString()
+                Log.d("DB2312312",title)
+                returnData = spotData(title, cord1, cord2, desc, ArrayList(), ArrayList(), likes.toInt())
+                Log.d("hash", returnData.hashCode().toString())
+            }else{
+                Log.e("DB", "key is not exists")
+            }
+        }.addOnFailureListener {
+            Log.e("DB", "failed to get more : " + it.toString())
+        }
+        Log.d("hash", returnData.hashCode().toString())
+        Log.d("test2", returnData.title)
+        return returnData
     }
 
-    fun initDB(){
-            //TODO dbconnecting을 하세요
-        var tmp:ArrayList<String> = ArrayList()
-        tmp.add("설명1")
-        tmp.add("설명2")
-        tmp.add("설명3")
-        addData("1",spotData(37.543675,127.077067,"새천년관입니다",tmp,tmp,0 ))
-        addData("2",spotData(37.541843, 127.078040,"학생회관입니다",tmp,tmp,0))
+    fun setData(d:spotData){    //key value 찾지 못할 시 insert 있으면 update
+        spotTable.child(d.title).setValue(d)
     }
 
-    fun getData():HashMap<String, spotData>{
-        return data;
-    }
-
-    fun addData(key:String, d:spotData){
-        //data.put(key, d)
-    }
-
-    fun removeData(key:String){
-        data.remove(key)
-    }
+//    fun removeData(key:String){
+//        data.remove(key)
+//    }
 }

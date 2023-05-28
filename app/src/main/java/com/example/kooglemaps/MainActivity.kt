@@ -2,15 +2,15 @@ package com.example.kooglemaps
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.example.kooglemaps.databinding.ActivityMainBinding
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
-    var db = Firebase.database
-    var table = db.getReference("Db/sample")
     lateinit var binding: ActivityMainBinding
     lateinit var data:HashMap<String,spotData>
+    val dbController = dbController()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         //var dbCon = dbController() //dbController
         //data = dbCon.getData()
-        table.child("dddd").child("cusdad").setValue(1)
+        dbController.setData(spotData("test1",1.1, 2.2, "dd", ArrayList(), ArrayList(), 0))
+        Log.d("test", dbController.getData("test1").title)
     }
 
     fun initLayout(){
