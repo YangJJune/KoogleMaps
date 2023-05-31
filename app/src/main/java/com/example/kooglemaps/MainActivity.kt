@@ -17,11 +17,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initLayout()
 
+        val temp = ArrayList<String>()
+        temp.add("dddd")
+        temp.add("dsadawbja")
+        val temp2 = ArrayList<String>()
+        temp2.add("dadihqwirankfanw")
+        temp2.add("daifgawjfbwaj")
 
         //var dbCon = dbController() //dbController
         //data = dbCon.getData()
-        dbController.setData(spotData("test1",1.1, 2.2, "dd", ArrayList(), ArrayList(), 0))
-        Log.d("test", dbController.getData("test1").title)
+        dbController.setData(spotData("test1",1.1, 2.2, "dd", temp, temp2, 0))
+        Log.d("test", dbController.getData2("test1").title)
     }
 
     fun initLayout(){
