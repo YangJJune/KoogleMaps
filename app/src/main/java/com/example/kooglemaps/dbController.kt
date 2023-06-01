@@ -18,6 +18,8 @@ class dbController (){
     val DBConnect = Firebase.database
     val spotTable = DBConnect.getReference("spotDB")
     val scope = CoroutineScope(Dispatchers.IO)
+    val tempArr = ArrayList<spotData>()
+    var tempSpot = spotData()
 
     init{
         val postListenener = object :ValueEventListener{
@@ -37,16 +39,12 @@ class dbController (){
         var returnData = spotData(title = "null")       //if data not exists
 
         lateinit var spotTask:DataSnapshot
-        scope.launch {
-            spotTask = spotTable.get().addOnSuccessListener{
-                Log.d("DB", "success")
-                it
-            }.addOnFailureListener{
-                Log.d("DB", "failed")
-            }.await()
-        }
-        val temp = spotTask
+        spotTask = spotTable.child(key).get().getResult()
 
+
+        val temp = spotTask.child(key)
+        if(temp.exists())
+            Log.d("dd","dddd")
 
         val title = temp.child("title").value.toString()
         val cord1 = temp.child("cord1").value as Double
@@ -62,28 +60,30 @@ class dbController (){
 
     fun getData(key:String) : spotData{
         var returnData = spotData()
-        val dataSnapshot= spotTable.child(key).get().addOnSuccessListener{
-            if(it.exists()){
 
-            }else{
-                Log.e("DB", "key is not exists")
-            }
-        }.addOnFailureListener {
-            Log.e("DB", "failed to get more : " + it.toString())
-        }
-        val temp = dataSnapshot.getResult()
-        val title = temp.child("title").value.toString()
-        val cord1 = temp.child("cord1").value as Double
-        val cord2 = temp.child("cord2").value as Double
-        val likes = temp.child("likes").value as Long
-        val desc = temp.child("desc").value.toString()
-        returnData = spotData(title, cord1, cord2, desc, ArrayList(), ArrayList(), likes.toInt())
+        val dataSnapshot = spotTable.child(key).get()
 
-        Log.d("hash", returnData.hashCode().toString())
-        Log.d("hash", returnData.hashCode().toString())
-        Log.d("test2", returnData.title)
+            val temp = dataSnapshot.getResult()
+            val title = temp.child("title").value.toString()
+            val cord1 = temp.child("cord1").value as Double
+            val cord2 = temp.child("cord2").value as Double
+            val likes = temp.child("likes").value as Long
+            val desc = temp.child("desc").value.toString()
+            returnData = spotData(title, cord1, cord2, desc, ArrayList(), ArrayList(), likes.toInt())
 
+
+//
+//        Log.d("hash", returnData.hashCode().toString())
+//        Log.d("hash", returnData.hashCode().toString())
+//        Log.d("test2", returnData.title)
+
+        Log.d("D232132B", returnData.title)
         return returnData
+    }
+
+    fun getDataHelper(spot:spotData){
+        Log.d("DB2222", spot.title)
+        tempSpot = spot
     }
 
     fun setData(d:spotData){    //key value 찾지 못할 시 insert 있으면 update
