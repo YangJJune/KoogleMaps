@@ -6,6 +6,10 @@ import android.util.Log
 import com.example.kooglemaps.databinding.ActivityMainBinding
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -27,7 +31,9 @@ class MainActivity : AppCompatActivity() {
         //var dbCon = dbController() //dbController
         //data = dbCon.getData()
         dbController.setData(spotData("test1",1.1, 2.2, "dd", temp, temp2, 0))
-        Log.d("test", dbController.getData("test1").title)
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.d("test", dbController.getData("test1").title)
+        }
     }
 
     fun initLayout(){

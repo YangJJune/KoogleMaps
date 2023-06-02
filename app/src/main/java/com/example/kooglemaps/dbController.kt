@@ -1,6 +1,8 @@
 package com.example.kooglemaps
 
+import android.provider.ContactsContract.Data
 import android.util.Log
+import android.view.inputmethod.CorrectionInfo
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.components.ComponentRuntime
@@ -18,83 +20,40 @@ class dbController (){
     val DBConnect = Firebase.database
     val spotTable = DBConnect.getReference("spotDB")
     val scope = CoroutineScope(Dispatchers.IO)
-    val tempArr = ArrayList<spotData>()
-    var tempSpot = spotData()
-    var shield = true
 
-    init{
-        val postListenener = object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val post = snapshot.getValue<spotData>()
-            }
+    suspend fun getData(key:String) : spotData{
+        var returnData = spotData()
+        lateinit var dataSnapshot:DataSnapshot
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("DB error", error.toString())
-            }
-
+        withContext(Dispatchers.IO) {
+            dataSnapshot = spotTable.child(key).get().await()
+            Log.v("wait In Scope", dataSnapshot.child("title").getValue() as String)
         }
-        spotTable.addValueEventListener(postListenener)
-    }
 
-    fun getData2(key: String) : spotData{
-        var returnData = spotData(title = "null")       //if data not exists
+        val temp = dataSnapshot
+        lateinit var tags:ArrayList<String>
+        lateinit var review:ArrayList<String>
 
-        lateinit var spotTask:DataSnapshot
-        spotTask = spotTable.child(key).get().getResult()
-
-
-        val temp = spotTask.child(key)
-        if(temp.exists())
-            Log.d("dd","dddd")
-
-        val title = temp.child("title").value.toString()
+        val title = temp.child("title").value as String
         val cord1 = temp.child("cord1").value as Double
         val cord2 = temp.child("cord2").value as Double
-        val tags = temp.child("tags").value as ArrayList<String>
-        val reviews = temp.child("reviews").value as ArrayList<String>
+        try {
+            tags = temp.child("tags").value as ArrayList<String>
+            review = temp.child("review").value as ArrayList<String>
+        }catch (E : java.lang.Exception){       //if ArrayList is null
+            tags = ArrayList<String>()
+            review = ArrayList<String>()
+        }
+        val desc = temp.child("desc").value as String
         val likes = temp.child("likes").value as Long
-        val desc = temp.child("desc").value.toString()
 
-        returnData = spotData(title, cord1, cord2, desc, tags, reviews, likes.toInt())
+        returnData = spotData(title, cord1, cord2, desc, tags, review, likes.toInt())
+        Log.v("String", title)
+
         return returnData
-    }
-
-    fun getFBData(key:String) : spotData{
-        var returnData = spotData()
-        var dataSnapshot = spotTable.child(key).get()
-            var tempString = "not changed"
-            if(scope.async {
-                dataSnapshot = spotTable.child(key).get()
-                Log.v("wait In Scope", tempString)
-            }.isCompleted){
-                val temp = dataSnapshot.getResult()
-                val title = temp.child("title").value as String
-                val cord1 = temp.child("cord1").value as Double
-                val cord2 = temp.child("cord2").value as Double
-                val tags = temp.child("tags").value as ArrayList<String>
-                val reviews = temp.child("reviews").value as ArrayList<String>
-                val desc = temp.child("desc").value as String
-                val likes = temp.child("likes").value as Long
-                returnData = spotData(title, cord1, cord2, desc, tags, reviews, likes.toInt())
-                Log.v("String", title)
-
-            }
-        return returnData
-    }
-
-    fun getDataHelper(key: String) : DataSnapshot{
-
-    }
-
-    fun getDataHelper2() : spotData{
-        return tempSpot
     }
 
     fun setData(d:spotData){    //key value 찾지 못할 시 insert 있으면 update
         spotTable.child(d.title).setValue(d)
     }
-
-//    fun removeData(key:String){
-//        data.remove(key)
-//    }
 }
