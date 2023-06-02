@@ -1,111 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="30dp"
+        android:background="#F9F9F9"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        tools:layout_editor_absoluteY="1dp"
+        android:gravity="center"
+        tools:ignore="MissingConstraints">
 
+
+        <EditText
+            android:id="@+id/idEdit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:hint="ID"
+            android:ems="15"
+            />
+        <EditText
+            android:id="@+id/passwordEdit"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:hint="PW"
+            android:ems="15"
+            />
+        <EditText
+            android:id="@+id/passwordEdit2"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:hint="PW 확인"
+            android:ems="15"
+            />
+        <EditText
+            android:id="@+id/emailedit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:hint="Email"
+            android:ems="15"
+            />
+
+        <Button
+            android:id="@+id/registerBtn"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#34A853"
+            android:text="등록하기"
+            />
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="12"
-            app:srcCompat="@drawable/koogle" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/registerIDinput"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="24"
-                android:ems="15"
-                android:inputType="textPersonName"
-                android:hint="ID"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                />
-
-            <Button
-                android:id="@+id/registerIDchk"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="중복\n확인" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingStart="25dp"
-            android:paddingEnd="125dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <EditText
-                android:id="@+id/registerPWinput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="15"
-                android:hint="password"
-                android:inputType="textPassword" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingStart="25dp"
-            android:paddingEnd="125dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-            <EditText
-                android:id="@+id/emailInput"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="email ex) aa@gmail.com"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:orientation="vertical">
-            <Button
-                android:id="@+id/registerExecBtn"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="회원가입" />
-        </LinearLayout>
-
+            android:layout_weight="4"
+            android:layout_margin="40dp"
+            android:src="@drawable/koogle"
+            tools:ignore="MissingConstraints" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
