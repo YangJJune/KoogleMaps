@@ -33,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         dbController.setData(spotData("test1",1.1, 2.2, "dd", temp, temp2, 0))
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("test", dbController.getData("test1").title)
+            val tempIterator = dbController.getAllData().iterator()
+            for(i in tempIterator) {
+                Log.d("test GetAll", i.value.title)
+            }
         }
     }
 
