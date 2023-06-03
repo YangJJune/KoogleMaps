@@ -1,6 +1,7 @@
 package com.example.kooglemaps
 
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -8,9 +9,32 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
 class dbController (){
+
     val DBConnect = Firebase.database
     val spotTable = DBConnect.getReference("spotDB")
+    //val userTable = DBConnect.getReference("userDB")
+
     val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var userDB:HashMap<String, String>
+
+    /*suspend fun getNickname(uid:String) : String {
+        lateinit var dataSnapshot:DataSnapshot
+
+        withContext(Dispatchers.IO) {
+            dataSnapshot = userTable.child(uid).get().await()
+        }
+
+        val nickname:String = dataSnapshot.child("nickname").value as String
+        if(nickname!=null){
+            return nickname
+        }
+        else{
+            throw java.lang.NullPointerException("Can't Find Nickname, is UID valid?")
+        }
+    }
+    fun setNickname(uid:String, newNickname:String){    //key value 찾지 못할 시 insert 있으면 update
+        userTable.child(uid).setValue(newNickname)
+    }*/
 
     suspend fun getAllData() : HashMap<String, spotData>{
         lateinit var dataSnapshot:DataSnapshot
@@ -41,7 +65,6 @@ class dbController (){
 
             returnMap.put(title ,returnData)
         }
-
         return returnMap
     }
 
