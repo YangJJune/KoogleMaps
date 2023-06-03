@@ -1,31 +1,83 @@
 package com.example.kooglemaps
 
+import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
+
 class dbController (){
-    private var data:HashMap<String, spotData> = HashMap()
+    val DBConnect = Firebase.database
+    val spotTable = DBConnect.getReference("spotDB")
+    val scope = CoroutineScope(Dispatchers.IO)
 
-    init{
-        initDB()
+    suspend fun getAllData() : HashMap<String, spotData>{
+        lateinit var dataSnapshot:DataSnapshot
+        var returnMap = HashMap<String, spotData>()
+
+        var tags = ArrayList<String>()
+        var review = ArrayList<String>()
+
+        withContext(Dispatchers.IO) {
+            dataSnapshot = spotTable.get().await()
+        }
+
+        for(temp in dataSnapshot.children){
+            val title = temp.child("title").value as String
+            val cord1 = temp.child("cord1").value as Double
+            val cord2 = temp.child("cord2").value as Double
+            try {
+                tags = temp.child("tags").value as ArrayList<String>
+                review = temp.child("review").value as ArrayList<String>
+            }catch (E : java.lang.Exception){       //if ArrayList is null
+                tags = ArrayList<String>()
+                review = ArrayList<String>()
+            }
+            val desc = temp.child("desc").value as String
+            val likes = temp.child("likes").value as Long
+
+            val returnData = spotData(title, cord1, cord2, desc, tags, review, likes.toInt())
+
+            returnMap.put(title ,returnData)
+        }
+
+        return returnMap
     }
 
-    fun initDB(){
-            //TODO dbconnecting을 하세요
-        var tmp:ArrayList<String> = ArrayList()
-        tmp.add("설명1")
-        tmp.add("설명2")
-        tmp.add("설명3")
-        addData("1",spotData(37.543675,127.077067,"새천년관입니다",tmp,tmp,0 ))
-        addData("2",spotData(37.541843, 127.078040,"학생회관입니다",tmp,tmp,0))
+    suspend fun getData(key:String) : spotData{
+        var returnData = spotData()
+        lateinit var dataSnapshot:DataSnapshot
+
+        withContext(Dispatchers.IO) {
+            dataSnapshot = spotTable.child(key).get().await()
+            Log.v("wait In Scope", dataSnapshot.child("title").getValue() as String)
+        }
+
+        val temp = dataSnapshot
+        lateinit var tags:ArrayList<String>
+        lateinit var review:ArrayList<String>
+
+        val title = temp.child("title").value as String
+        val cord1 = temp.child("cord1").value as Double
+        val cord2 = temp.child("cord2").value as Double
+        try {
+            tags = temp.child("tags").value as ArrayList<String>
+            review = temp.child("review").value as ArrayList<String>
+        }catch (E : java.lang.Exception){       //if ArrayList is null
+            tags = ArrayList<String>()
+            review = ArrayList<String>()
+        }
+        val desc = temp.child("desc").value as String
+        val likes = temp.child("likes").value as Long
+
+        returnData = spotData(title, cord1, cord2, desc, tags, review, likes.toInt())
+        Log.v("String", title)
+
+        return returnData
     }
 
-    fun getData():HashMap<String, spotData>{
-        return data;
-    }
-
-    fun addData(key:String, d:spotData){
-        data.put(key, d)
-    }
-
-    fun removeData(key:String){
-        data.remove(key)
+    fun setData(d:spotData){    //key value 찾지 못할 시 insert 있으면 update
+        spotTable.child(d.title).setValue(d)
     }
 }
