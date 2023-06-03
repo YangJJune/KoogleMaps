@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
                      Toast.makeText(this,"로그인 실패", Toast.LENGTH_SHORT).show()
                  }
             }
-            //Toast.makeText(this,"로그인 시도", Toast.LENGTH_SHORT).show()
         }
         binding.registerBtn.setOnClickListener {
             val i = Intent(this@MainActivity, RegisterActivity::class.java)
