@@ -2,14 +2,22 @@ package com.example.kooglemaps
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kooglemaps.databinding.ActivityRegisterBinding
 import com.example.kooglemaps.databinding.ActivitySpotBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // spot icon 클릭 시 해당 spot 정보 띄우는 작업 수행
 class SpotActivity: AppCompatActivity() {
     lateinit var binding: ActivitySpotBinding
     var favoriteColor = "gray"
+    val DBcontroller = dbController()
+    var curSpotData = spotData()
+    var uid = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,12 +31,33 @@ class SpotActivity: AppCompatActivity() {
 
     fun initLayout() {
         // intent를 통해 장소의 id 전달 받고,
-        // 해당 장소의 DB정보 불러오는 작업 수행
+        // 해당 장소의 DB정보 불러와서 화면에 띄우는 작업 수행
+        CoroutineScope(Dispatchers.IO).launch {
+            curSpotData = DBcontroller.getData("test")
+        }
 
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
-        val user = intent.getStringExtra("userData")
-        // spotDB의 좋아요 누른 uid리스트에 현재 로그인 된 user의 id있는지 탐색
+        uid = intent.getStringExtra("uid").toString()
+        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
 
+        // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
+        var like = curSpotData.likeUser!!.contains(uid)
+        var likeCount = curSpotData.likeUser!!.size
+
+        // 있으면 빨간 하트로 설정 & 없으면 회색으로 설정
+        binding.apply {
+            spotName.setText(curSpotData.title)
+            spotDescription.setText(curSpotData.desc)
+            if(like){
+                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
+                favoriteColor = "red"
+            }
+            else{
+                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
+                favoriteColor = "gray"
+            }
+            favoriteNum.setText(likeCount)
+        }
     }
 
     fun initEvent(){
@@ -55,6 +84,9 @@ class SpotActivity: AppCompatActivity() {
                     favoriteColor = "red"
 
                     /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
+                    if(curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.remove(uid)
+                    }
 
                 }
                 else if(favoriteColor == "red"){
@@ -64,7 +96,9 @@ class SpotActivity: AppCompatActivity() {
                     favoriteColor = "gray"
 
                     /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-
+                    if(!curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.add(uid)
+                    }
                 }
             }
         }

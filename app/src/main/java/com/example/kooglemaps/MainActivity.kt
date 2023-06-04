@@ -14,7 +14,6 @@ import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    lateinit var data:HashMap<String,spotData>
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,34 +24,27 @@ class MainActivity : AppCompatActivity() {
         initLayout()
 
         var dbCon = dbController() //dbController
-        data = dbCon.getData()
     }
     val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
 
     }
     fun initLayout(){
-        val email = binding.idEdit.text.toString()
-        val pw = binding.passwordEdit.text.toString()
         binding.loginBtn.setOnClickListener {
-
-            val i = Intent(this, AddSpotActivity::class.java)
-            startActivity(i)
-
-//            val tmpIntent = Intent(this, SpotActivity::class.java)
-//            tmpIntent.putExtra("userData", auth.currentUser)
-//            startActivity(tmpIntent)
-
-//            auth.signInWithEmailAndPassword(email,pw).addOnCompleteListener(this){ task->
-//                if(task.isSuccessful){
-//                    //지도가 뜨는 엑티비티로 전환
-////                    val tmpIntent = Intent(this, SpotActivity::class.java)
-////                    tmpIntent.putExtra("userData", auth.currentUser)
-//                    Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show()
-//                }else{
-//                    Toast.makeText(this,"로그인 실패", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-            //Toast.makeText(this,"로그인 시도", Toast.LENGTH_SHORT).show()
+            val email = binding.idEdit.text.toString()
+            val pw = binding.passwordEdit.text.toString()
+            auth.signInWithEmailAndPassword(email,pw).addOnCompleteListener(this){task->
+                if(task.isSuccessful){
+                    //지도가 뜨는 엑티비티로 전환
+                    val tmpIntent = Intent(this, SpotActivity::class.java)
+                    tmpIntent.putExtra("uid", auth.currentUser!!.uid)
+                    startActivity(tmpIntent)
+//                    val tmpIntent = Intent(this, SpotActivity::class.java)
+//                    tmpIntent.putExtra("userData", auth.currentUser)
+                    Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this,task.exception.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         binding.registerBtn.setOnClickListener {
             val i = Intent(this@MainActivity, RegisterActivity::class.java)

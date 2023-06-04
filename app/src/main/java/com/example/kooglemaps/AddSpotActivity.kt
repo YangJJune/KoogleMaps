@@ -42,6 +42,8 @@ class AddSpotActivity: AppCompatActivity() {
                         "스팟 이름은 필수로 입력해야 합니다!", Toast.LENGTH_SHORT).show()
                 }
                 // 지도 위치 선택했는지 확인
+                //else if(){
+                // }
 
                 // 스팟 설명 입력했는지 확인
                 else if(spotDescription.text.toString().equals("")||spotDescription.text.toString()==null
@@ -52,7 +54,14 @@ class AddSpotActivity: AppCompatActivity() {
 
                 // 전부 다 입력 됐으면 DB로 정보 넘기고 지도 화면으로 복귀
                 else{
+                    val DBcontroller = dbController()
+                    DBcontroller.setData(
+                        spotData(spotName.text.toString(), 1.0, 2.0,
+                        spotDescription.text.toString(), null, null, null )
+                    )
 
+                    val intent = Intent(this@AddSpotActivity, MainActivity::class.java)
+                    startActivity(intent)
                 }
             }
 
