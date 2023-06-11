@@ -35,9 +35,10 @@ class MainActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email,pw).addOnCompleteListener(this){task->
                  if(task.isSuccessful){
                      //지도가 뜨는 엑티비티로 전환
-                     val tmpIntent = Intent(this, SpotActivity::class.java)
+                     val tmpIntent = Intent(this, MapActivity::class.java)
                      tmpIntent.putExtra("userData", auth.currentUser)
                      Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show()
+                     launcher.launch(tmpIntent)
                  }else{
                      Toast.makeText(this,task.exception.toString(), Toast.LENGTH_SHORT).show()
                  }

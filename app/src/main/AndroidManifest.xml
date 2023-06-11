@@ -30,6 +30,7 @@
         </activity>
         <activity android:name=".SpotActivity"/>
         <activity android:name=".AddSpotActivity"/>
+        <activity android:name=".MapActivity"/>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
