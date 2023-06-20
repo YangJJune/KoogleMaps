@@ -21,9 +21,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
+>>>>>>>>> Temporary merge branch 2
 
 // spot icon 클릭 시 해당 spot 정보 띄우는 작업 수행
 class SpotActivity: AppCompatActivity() {
@@ -31,7 +38,9 @@ class SpotActivity: AppCompatActivity() {
     var favoriteColor = "gray"
     var curSpotData = spotData()
     var uid = ""
+<<<<<<<<< Temporary merge branch 1
     private lateinit var auth: FirebaseAuth
+    var title = ""
 
     lateinit var googleMap: GoogleMap
     val dbCon = dbController()
@@ -41,6 +50,7 @@ class SpotActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
+
         title = intent.getStringExtra("title") as String
         Log.v("title", title)
         Log.e("hash", curSpotData.hashCode().toString())
@@ -74,7 +84,8 @@ class SpotActivity: AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.VERTICAL, false)
         // 어댑터 객체 생성 후 초기화
-        adapter = SpotDataAdapter(data)
+        val adapter = SpotDataAdapter(curSpotData.review)
+        Log.e("size", curSpotData.review.size.toString())
 
         binding.recyclerView.adapter = adapter
 
@@ -105,6 +116,7 @@ class SpotActivity: AppCompatActivity() {
         Log.i("uid", uid)
         Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
 
+        Log.v("size", likeList.size.toString())
         // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
         var like = likeList.contains(uid)
 
