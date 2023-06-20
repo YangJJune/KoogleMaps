@@ -1,12 +1,21 @@
 package com.example.kooglemaps
 
+import android.app.ProgressDialog.show
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kooglemaps.databinding.ActivityRegisterBinding
 import com.example.kooglemaps.databinding.ActivitySpotBinding
+import com.example.kooglemaps.databinding.AlertdialogEdittextBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -28,6 +37,9 @@ class SpotActivity: AppCompatActivity() {
 
     lateinit var googleMap: GoogleMap
 
+    val data:ArrayList<spotData> = ArrayList()
+    lateinit var adapter: SpotDataAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,6 +49,20 @@ class SpotActivity: AppCompatActivity() {
         initLayout()
         initEvent()
         initmap()
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(this,
+            LinearLayoutManager.VERTICAL, false)
+        // 어댑터 객체 생성 후 초기화
+        adapter = SpotDataAdapter(data)
+
+        binding.recyclerView.adapter = adapter
+
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+        )
     }
 
     fun initLayout() {
@@ -115,6 +141,25 @@ class SpotActivity: AppCompatActivity() {
                     }
                 }
             }
+
+            addBtn.setOnClickListener {
+                // 리뷰 작성
+                val builder = AlertDialog.Builder(this@SpotActivity)
+                val builderItem = AlertdialogEdittextBinding.inflate(layoutInflater)
+                val editText = builderItem.editText
+                with(builder){
+                    setTitle("한 줄 평 추가")
+                    setIcon(R.drawable.baseline_add_comment_24)
+                    setMessage("한 줄 평을 입력해주세요")
+                    setView(builderItem.root)
+                    setPositiveButton("추가"){dialogInterface:DialogInterface, i:Int ->
+                        if(editText.text!=null)
+                            Toast.makeText(this@SpotActivity, "한 줄 평 추가 완료", Toast.LENGTH_SHORT).show()
+                    }
+                    setNegativeButton("취소", null)
+                    show()
+                }
+           }
         }
     }
 
@@ -167,15 +212,7 @@ class SpotActivity: AppCompatActivity() {
             )
             option.title(title)//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
-
-            googleMap.setOnMapClickListener { latLng ->
-                // 클릭한 위치에 마커를 추가합니다.
-                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
-            }
-
             googleMap.setLatLngBoundsForCameraTarget(bounds)
-
-
         }
     }
 }
