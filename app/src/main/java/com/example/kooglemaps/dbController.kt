@@ -9,6 +9,8 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
+//ddddsdawdawdsadwa
+
 /*
     내일 할거
     - itemAdd callBack fun으로 업데이트된 횟수 구현
