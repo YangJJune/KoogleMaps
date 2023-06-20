@@ -56,9 +56,9 @@ class dbController (){
 
                 lateinit var returnData:spotData
                 val temp = snapshot
-                var tags = ArrayList<String>()
-                var review = ArrayList<String>()
-                var likes = ArrayList<String>()
+                var tags:ArrayList<String> = arrayListOf<String>()
+                var review:ArrayList<String> = arrayListOf<String>()
+                var likes:ArrayList<String> = arrayListOf<String>()
                 var cord1 = 0.0
                 var cord2 = 0.0
 
@@ -107,7 +107,7 @@ class dbController (){
                     likes = temp.child("likeUser").value as ArrayList<String>
                     Log.v("in DB like", likes.size.toString())
                 }catch (E : java.lang.Exception){       //if ArrayList is null
-
+                    Log.d("d", "problem happen" + temp.child("review"))
                 }
                 val desc = temp.child("desc").value as String
 
@@ -174,13 +174,13 @@ class dbController (){
             try {
                 cord1 = temp.child("cord1").value as Double
                 cord2 = temp.child("cord2").value as Double
-                for(i in temp.child("tags").children) {
+                for(i in temp.child("tags").children.iterator()) {
                     tags.add(i.value as String)
                 }
-                for(i in temp.child("review").children) {
+                for(i in temp.child("review").children.iterator()) {
                     review.add(i.value as String)
                 }
-                for(i in temp.child("likeUser").children) {
+                for(i in temp.child("likeUser").children.iterator()) {
                     likes.add(i.value as String)
                     Log.v("Like Data", i.value as String)
                 }

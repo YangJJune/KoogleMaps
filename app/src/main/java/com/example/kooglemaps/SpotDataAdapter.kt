@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.kooglemaps.databinding.RowBinding
 import com.example.kooglemaps.databinding.RowcommentBinding
 
-class SpotDataAdapter(val items:ArrayList<String>)
+class SpotDataAdapter(val items: ArrayList<String>)
     : RecyclerView.Adapter<SpotDataAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: RowcommentBinding):RecyclerView.ViewHolder(binding.root){

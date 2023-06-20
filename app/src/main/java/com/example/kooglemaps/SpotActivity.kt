@@ -30,7 +30,6 @@ import kotlinx.coroutines.withContext
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
->>>>>>>>> Temporary merge branch 2
 
 // spot icon 클릭 시 해당 spot 정보 띄우는 작업 수행
 class SpotActivity: AppCompatActivity() {
@@ -38,21 +37,21 @@ class SpotActivity: AppCompatActivity() {
     var favoriteColor = "gray"
     var curSpotData = spotData()
     var uid = ""
-<<<<<<<<< Temporary merge branch 1
     private lateinit var auth: FirebaseAuth
     var title = ""
+    lateinit var adapter:SpotDataAdapter
 
     lateinit var googleMap: GoogleMap
     val dbCon = dbController()
 
-    val data:ArrayList<spotData> = ArrayList()
+    val data:ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
 
         title = intent.getStringExtra("title") as String
-        Log.v("title", title)
+        Log.v("title", title as String)
         Log.e("hash", curSpotData.hashCode().toString())
 
         binding = ActivitySpotBinding.inflate(layoutInflater)
@@ -114,7 +113,7 @@ class SpotActivity: AppCompatActivity() {
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
         uid = Firebase.auth.uid.toString()
         Log.i("uid", uid)
-        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
+
 
         Log.v("size", likeList.size.toString())
         // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
