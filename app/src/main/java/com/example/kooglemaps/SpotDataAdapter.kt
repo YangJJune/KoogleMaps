@@ -6,16 +6,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.kooglemaps.databinding.RowBinding
+import com.example.kooglemaps.databinding.RowcommentBinding
 
 class SpotDataAdapter(val items:ArrayList<String>)
     : RecyclerView.Adapter<SpotDataAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: RowBinding):RecyclerView.ViewHolder(binding.root){
+    inner class ViewHolder(val binding: RowcommentBinding):RecyclerView.ViewHolder(binding.root){
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = RowBinding.inflate(
+        val view = RowcommentBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false)
 

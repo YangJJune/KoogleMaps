@@ -24,13 +24,13 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="100"
             app:srcCompat="@drawable/koogle" />
 
             <EditText
                 android:id="@+id/idEdit"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="ID"
                 android:ems="15"
@@ -39,7 +39,7 @@
                 android:id="@+id/passwordEdit"
                 android:inputType="textPassword"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="PW"
                 android:ems="15"
@@ -47,7 +47,7 @@
             <Button
                 android:id="@+id/loginBtn"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="#34A853"
                 android:text="로그인"
@@ -55,10 +55,18 @@
             <Button
                 android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="#34A853"
                 android:text="회원가입"
+                />
+            <Button
+                android:id="@+id/noLoginBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#79c78e"
+                android:text="비회원 로그인"
                 />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
