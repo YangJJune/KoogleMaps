@@ -21,6 +21,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 
 // spot icon 클릭 시 해당 spot 정보 띄우는 작업 수행
@@ -56,9 +58,11 @@ class SpotActivity: AppCompatActivity() {
         Log.i("title232", curSpotData.title)
 
         initmap()
-        initLayout()
-        initEvent()
-        initRecyclerView()
+        CoroutineScope(Dispatchers.Main).launch {
+            initLayout()
+            initEvent()
+            initRecyclerView()
+        }
     }
 
     override fun onStop() {
@@ -66,7 +70,7 @@ class SpotActivity: AppCompatActivity() {
         dbCon.setData(curSpotData)
     }
 
-    private fun initRecyclerView() {
+    suspend fun initRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.VERTICAL, false)
         // 어댑터 객체 생성 후 초기화
@@ -80,16 +84,25 @@ class SpotActivity: AppCompatActivity() {
         )
     }
 
-    fun initLayout() {
+    suspend fun initLayout() {
         // intent를 통해 장소의 id 전달 받고,
         // 해당 장소의 DB정보 불러와서 화면에 띄우는 작업 수행
-        //val title = intent.getStringExtra("title")
+        val title = intent.getStringExtra("title")
         val desc = intent.getStringExtra("desc")
+        CoroutineScope(Dispatchers.IO).async {
+            curSpotData = dbCon.getData(title!!)
+        }.await()
+        Log.v("async", curSpotData.title)
+        if(curSpotData.title == null)
+            return
+
         var likeList = curSpotData.likeUser
         Log.d("likeSize", likeList?.size.toString())
 
+
+
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
-        uid = intent.getStringExtra("uid").toString()
+        uid = Firebase.auth.uid.toString()
         Log.i("uid", uid)
         Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
 
@@ -114,7 +127,7 @@ class SpotActivity: AppCompatActivity() {
         }
     }
 
-    fun initEvent(){
+    suspend fun initEvent(){
         binding.apply {
             goBackBtn.setOnClickListener {
                 // 뒤로가기 버튼 클릭 시 이벤트 처리
