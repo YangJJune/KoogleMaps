@@ -38,8 +38,10 @@ class AddSpotActivity: AppCompatActivity() {
                 /* 뒤로가기 버튼 클릭 시 이벤트 처리 */
                 // 이전 화면(구글 맵 화면)으로 이동
                 /* 임시로 로그인 화면으로 이동하는 걸로 구현 */
-                val intent = Intent(this@AddSpotActivity, MapActivity::class.java)
-                startActivity(intent)
+
+                //val intent = Intent(this@AddSpotActivity, MapActivity::class.java)
+                //startActivity(intent)
+                finish()
             }
 
             addBtn.setOnClickListener { 
@@ -85,6 +87,13 @@ class AddSpotActivity: AppCompatActivity() {
                     )
 
                     val intent = Intent(this@AddSpotActivity, MapActivity::class.java)
+                    //finish()//가 더 매끄러울 듯 한데, 맵의 실시간 업데이트가 필요함..
+
+                    //intent.putExtra("title", spotName.text.toString())
+                    //intent.putExtra("content", spotDescription.text.toString())
+                    intent.putExtra("xPoint", x.toString())
+                    intent.putExtra("yPoint", y.toString())
+                    intent.putExtra("Added", "add")
                     startActivity(intent)
                 }
             }
@@ -218,11 +227,6 @@ class AddSpotActivity: AppCompatActivity() {
             )
             option.title("스팟 추가 위치")//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
-
-            googleMap.setOnMapClickListener { latLng ->
-                // 클릭한 위치에 마커를 추가합니다.
-                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
-            }
 
             googleMap.setLatLngBoundsForCameraTarget(bounds)
         }

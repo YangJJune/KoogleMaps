@@ -65,7 +65,7 @@ class SpotActivity: AppCompatActivity() {
 //            else{
 //                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
 //                favoriteColor = "gray"
-//            }
+//            }ㅜ
             //favoriteNum.setText(likeCount)
 
             spotName.text = title
@@ -80,8 +80,10 @@ class SpotActivity: AppCompatActivity() {
                 // 뒤로가기 버튼 클릭 시 이벤트 처리
                 // 이전 화면(구글 맵 화면)으로 이동
                 /* 임시로 로그인 화면으로 이동하는 걸로 구현 */
-                val intent = Intent(this@SpotActivity, MapActivity::class.java)
-                startActivity(intent)
+                //val intent = Intent(this@SpotActivity, MapActivity::class.java)
+                //startActivity(intent)
+
+                finish()//finish가 더 매끄러울 듯
             }
 
             favoriteBtn.setOnClickListener {
@@ -167,15 +169,9 @@ class SpotActivity: AppCompatActivity() {
             )
             option.title(title)//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
-
-            googleMap.setOnMapClickListener { latLng ->
-                // 클릭한 위치에 마커를 추가합니다.
-                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
-            }
-
+            
+            //해당 화면에서 카메라 이동제한
             googleMap.setLatLngBoundsForCameraTarget(bounds)
-
-
         }
     }
 }

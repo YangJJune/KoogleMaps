@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="baseB">
+        <item>@drawable/animaldoc</item>
+        <item>@drawable/animallifesc</item>
+        <item>@drawable/build</item>
+        <item>@drawable/ceo</item>
+        <item>@drawable/changui</item>
+        <item>@drawable/doctorlife</item>
+        <item>@drawable/engin</item>
+        <item>@drawable/enrolinfo</item>
+        <item>@drawable/ground</item>
+        <item>@drawable/hangjeong</item>
+        <item>@drawable/hospital</item>
+        <item>@drawable/korean</item>
+        <item>@drawable/kulhouse</item>
+        <item>@drawable/language</item>
+        <item>@drawable/law</item>
+        <item>@drawable/library</item>
+        <item>@drawable/muse</item>
+        <item>@drawable/newengine</item>
+        <item>@drawable/newyear</item>
+        <item>@drawable/research</item>
+        <item>@drawable/science</item>
+        <item>@drawable/student</item>
+        <item>@drawable/teamprj</item>
+    </integer-array>
+    
+</resources>
