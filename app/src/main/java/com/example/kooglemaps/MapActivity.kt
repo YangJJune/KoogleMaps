@@ -1,6 +1,8 @@
 package com.example.kooglemaps
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,7 +14,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.kooglemaps.databinding.ActivtyMapBinding
@@ -23,6 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.play.integrity.internal.x
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -34,6 +38,7 @@ import kotlinx.coroutines.launch
 class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener{
     lateinit var binding: ActivtyMapBinding
     lateinit var googleMap: GoogleMap
+    lateinit var auth:FirebaseAuth
     private lateinit var getResult:ActivityResultLauncher<Intent>
 
     val dbController = dbController()
@@ -192,14 +197,6 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
 
 
             //맵 마커
-            val option = MarkerOptions()
-            option.position(konkuk_loc)
-            option.icon(
-                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-            )
-            option.title("청심대")//마커의 윗쪽 큰글씨
-            option.snippet("그늘 굿")//마커의 아랫쪽 작은글씨
-            googleMap.addMarker(option)?.showInfoWindow()
 
             googleMap.setOnMapClickListener { latLng ->
                 // 클릭한 위치에 마커를 추가합니다.
@@ -272,18 +269,17 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
         // 기존 마커가 있는 경우 제거합니다.
         //clickedMarker?.remove()
 
-        if(auth.currentUser?.isAnonymous == true){
-            Toast.makeText(this@MapActivity,"비회원은 이용이 불가합니다", Toast.LENGTH_SHORT).show()
-        }
-        else {
+        if (auth.currentUser?.isAnonymous == true) {
+            Toast.makeText(this@MapActivity, "비회원은 이용이 불가합니다", Toast.LENGTH_SHORT).show()
+        } else {
             // 마커를 추가합니다.
             clickedMarker =
                 googleMap.addMarker(MarkerOptions().position(p0).title("Click to set title"))
             val i = Intent(this, AddSpotActivity::class.java)
             i.putExtra("loc", p0.toString())
 
-        startActivity(i)
+            startActivity(i)
+        }
     }
-
 
 }

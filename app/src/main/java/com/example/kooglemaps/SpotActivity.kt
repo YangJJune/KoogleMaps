@@ -113,7 +113,6 @@ class SpotActivity: AppCompatActivity() {
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
         uid = Firebase.auth.uid.toString()
         Log.i("uid", uid)
-        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
 
         Log.v("size", likeList.size.toString())
         // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
