@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.kooglemaps.databinding.ActivitySearchBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +31,8 @@ class SearchActivity: AppCompatActivity() {
         initRecyclerView()
     }
     fun initRecyclerView(){
+        val decoration = DividerItemDecoration(applicationContext, VERTICAL)
+        binding.recyclerView.addItemDecoration(decoration)
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         adapter = srchAdapter(foundSpot)
         adapter.itemClickListener = object:srchAdapter.OnItemClickListener{
