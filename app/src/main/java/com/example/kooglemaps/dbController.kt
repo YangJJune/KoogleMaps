@@ -15,7 +15,6 @@ import kotlinx.coroutines.tasks.await
     - 그걸로 업데이트 된 count만큼 최신 데이터 불러오기
 */
 class dbController (){
-
     companion object{   //static 변수,함수
         var updatedCount = 0;
         val removedKey = HashSet<String>()
