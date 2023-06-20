@@ -1,11 +1,21 @@
 package com.example.kooglemaps
 
+import android.app.ProgressDialog.show
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kooglemaps.databinding.ActivityRegisterBinding
 import com.example.kooglemaps.databinding.ActivitySpotBinding
+import com.example.kooglemaps.databinding.AlertdialogEdittextBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -22,11 +32,13 @@ import kotlinx.coroutines.withContext
 class SpotActivity: AppCompatActivity() {
     lateinit var binding: ActivitySpotBinding
     var favoriteColor = "gray"
-    val DBcontroller = dbController()
     var curSpotData = spotData()
     var uid = ""
 
     lateinit var googleMap: GoogleMap
+
+    val data:ArrayList<spotData> = ArrayList()
+    lateinit var adapter: SpotDataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +49,20 @@ class SpotActivity: AppCompatActivity() {
         initLayout()
         initEvent()
         initmap()
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(this,
+            LinearLayoutManager.VERTICAL, false)
+        // 어댑터 객체 생성 후 초기화
+        adapter = SpotDataAdapter(data)
+
+        binding.recyclerView.adapter = adapter
+
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+        )
     }
 
     fun initLayout() {
@@ -50,23 +76,23 @@ class SpotActivity: AppCompatActivity() {
         }
 
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
-//        uid = intent.getStringExtra("uid").toString()
-//        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
-//
-//        // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
-//        var like = likeList!!.contains(uid)
+        uid = intent.getStringExtra("uid").toString()
+        Log.i("uid", uid)
+        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
+
+        // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
+        var like = likeList.contains(uid)
 
         // 있으면 빨간 하트로 설정 & 없으면 회색으로 설정
         binding.apply {
-//            if(like){
-//                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
-//                favoriteColor = "red"
-//            }
-//            else{
-//                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
-//                favoriteColor = "gray"
-//            }
-            //favoriteNum.setText(likeCount)
+            if(like){
+                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
+                favoriteColor = "red"
+            }
+            else{
+                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
+                favoriteColor = "gray"
+            }
 
             spotName.text = title
             favoriteNum.text = likeList.size.toString()
@@ -91,30 +117,49 @@ class SpotActivity: AppCompatActivity() {
 
                 var favoriteCount = favoriteNum.text.toString().toInt()
 
-//                if(favoriteColor == "gray") {
-//                    // 누르지 않은 상태에서 클릭 (gray=>red)
-//                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
-//                    favoriteNum.setText("${++favoriteCount}")
-//                    favoriteColor = "red"
-//
-//                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-//                    if(curSpotData.likeUser!!.contains(uid)){
-//                        curSpotData.likeUser!!.remove(uid)
-//                    }
-//
-//                }
-//                else if(favoriteColor == "red"){
-//                    // 누른 상태에서 클릭 (red=>gray)
-//                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
-//                    favoriteNum.setText("${--favoriteCount}")
-//                    favoriteColor = "gray"
-//
-//                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-//                    if(!curSpotData.likeUser!!.contains(uid)){
-//                        curSpotData.likeUser!!.add(uid)
-//                    }
-//                }
+                if(favoriteColor == "gray") {
+                    // 누르지 않은 상태에서 클릭 (gray=>red)
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
+                    favoriteNum.setText("${++favoriteCount}")
+                    favoriteColor = "red"
+
+                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
+                    if(curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.remove(uid)
+                    }
+
+                }
+                else if(favoriteColor == "red"){
+                    // 누른 상태에서 클릭 (red=>gray)
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
+                    favoriteNum.setText("${--favoriteCount}")
+                    favoriteColor = "gray"
+
+                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
+                    if(!curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.add(uid)
+                    }
+                }
             }
+
+            addBtn.setOnClickListener {
+                // 리뷰 작성
+                val builder = AlertDialog.Builder(this@SpotActivity)
+                val builderItem = AlertdialogEdittextBinding.inflate(layoutInflater)
+                val editText = builderItem.editText
+                with(builder){
+                    setTitle("한 줄 평 추가")
+                    setIcon(R.drawable.baseline_add_comment_24)
+                    setMessage("한 줄 평을 입력해주세요")
+                    setView(builderItem.root)
+                    setPositiveButton("추가"){dialogInterface:DialogInterface, i:Int ->
+                        if(editText.text!=null)
+                            Toast.makeText(this@SpotActivity, "한 줄 평 추가 완료", Toast.LENGTH_SHORT).show()
+                    }
+                    setNegativeButton("취소", null)
+                    show()
+                }
+           }
         }
     }
 
@@ -167,15 +212,7 @@ class SpotActivity: AppCompatActivity() {
             )
             option.title(title)//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
-
-            googleMap.setOnMapClickListener { latLng ->
-                // 클릭한 위치에 마커를 추가합니다.
-                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
-            }
-
             googleMap.setLatLngBoundsForCameraTarget(bounds)
-
-
         }
     }
 }
