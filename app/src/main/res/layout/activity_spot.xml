@@ -8,20 +8,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="0dp"
+            android:layout_weight="1.8"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/goBackBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="60dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="70dp"
                 app:srcCompat="?attr/homeAsUpIndicator"
                 app:tint="#34A853" />
 
@@ -29,10 +32,10 @@
                 android:id="@+id/appTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="10dp"
                 android:text="Koogle Maps"
                 android:textColor="#34A853"
-                android:textSize="30sp" />
+                android:textSize="25sp" />
 
         </LinearLayout>
 
@@ -46,22 +49,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="0dp"
+            android:layout_weight="1.7"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/spotName"
-                android:layout_width="310dp"
+                android:layout_width="0dp"
+                android:layout_weight="8"
                 android:layout_height="40dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginLeft="15dp"
-                android:textSize="22sp"
-                android:text="스팟이름이몇글자까지잘보일까요"
+                android:textSize="20sp"
+                android:text="스팟이름이잘보일까요"
                 android:textStyle="bold"/>
 
             <ImageButton
                 android:id="@+id/favoriteBtn"
-                android:layout_width="50dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="50dp"
                 android:layout_marginTop="5dp"
                 android:backgroundTint="#FDFDFD"
@@ -70,34 +75,64 @@
 
             <TextView
                 android:id="@+id/favoriteNum"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="40dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginRight="7dp"
+                android:layout_marginTop="13dp"
                 android:textSize="20sp"
                 android:text="0"
                 android:textStyle="bold"/>
         </LinearLayout>
 
         <FrameLayout
-            android:layout_width="390dp"
-            android:layout_height="230dp"
+            android:layout_width="370dp"
+            android:layout_height="0dp"
+            android:layout_weight="7"
             android:layout_margin="10dp">
             <androidx.fragment.app.FragmentContainerView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id = "@+id/map_spot"
+                android:id="@+id/map_spot"
                 android:name="com.google.android.gms.maps.SupportMapFragment"/>
         </FrameLayout>
 
         <TextView
             android:id="@+id/spotDescription"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_margin="13dp"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:textSize="18sp"
-            android:text="스팟설명은몇글자까지잘보일까요\nㅋㅋ한줄에스무글자는보이려나요??이런식이면200글자는힘들거같은데..스팟설명은몇글자까지잘보일까요한줄에스무글자는보이려나요??\n이런식이면200글자는힘들거같은데..스팟설명은몇글자까지잘보일까요한줄에\n스무글자는보이려나요??이런식이면200글자는힘들거같은데.."
+            android:text="스팟설명은몇글자까지잘보일까요한줄에스무글자는보이려나요??이런식이면200글자는힘들거같은데..스팟설명은몇글자까지잘보일까요한줄에스무글자는보이려나요??이런식이면200글자는힘들거같은데.."
             android:textStyle="bold"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="#34A853"
+            android:backgroundTintMode="add" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:text="한 줄 평"
+            android:textAlignment="center"
+            android:textColor="#34A853"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"/>
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

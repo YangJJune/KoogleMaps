@@ -1,5 +1,6 @@
 package com.example.kooglemaps
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -51,10 +52,6 @@ class AddSpotActivity: AppCompatActivity() {
                         "스팟 이름은 필수로 입력해야 합니다!", Toast.LENGTH_SHORT).show()
                 }
 
-                // 지도 위치 선택했는지 확인
-                //else if(){
-                // }
-
                 // 스팟 설명 입력했는지 확인
                 else if(spotDescription.text.toString().equals("")||spotDescription.text.toString()==null
                     ||spotDescription.text.toString().replace(" ", "").equals("")){
@@ -65,12 +62,26 @@ class AddSpotActivity: AppCompatActivity() {
                 // 전부 다 입력 됐으면 DB로 정보 넘기고 지도 화면으로 복귀
                 else{
                     val DBcontroller = dbController()
+                    val loc = intent.getStringExtra("loc")
+
+                    val regex = Regex("""\d+\.\d+""")
+                    val matches = regex.findAll(loc!!)
+                    val numbers = matches.map { it.value }.toList()
+
+                    var x :Double = 0.0
+                    var y :Double = 0.0
+
+                    if (numbers.size == 2) {
+                        x= numbers[0].toDouble()
+                        y= numbers[1].toDouble()
+                    }
+
                     DBcontroller.setData(
-                        spotData(spotName.text.toString(), 1.0, 2.0,
-                        spotDescription.text.toString(), null, null, null )
+                        spotData(spotName.text.toString(), x, y,
+                            spotDescription.text.toString())
                     )
 
-                    val intent = Intent(this@AddSpotActivity, MainActivity::class.java)
+                    val intent = Intent(this@AddSpotActivity, Activity::class.java)
                     startActivity(intent)
                 }
             }
@@ -79,7 +90,7 @@ class AddSpotActivity: AppCompatActivity() {
             /* 사용자 입력에 따른 처리 */
             var txt = ""
 
-            // spot name : 최대 15자
+            // spot name : 최대 10자 & 1줄
             // 15자 이상이면 경고 알림
             spotName.addTextChangedListener(object:TextWatcher{
                 override fun beforeTextChanged(
@@ -89,17 +100,25 @@ class AddSpotActivity: AppCompatActivity() {
 
                 override fun onTextChanged(
                     s: CharSequence?, start: Int, count: Int, after: Int) {
-                    if(spotName.length() > 15){
+                    if(spotName.length() > 10){
                         nametxtCount.setTextColor(Color.RED)
                         Toast.makeText(this@AddSpotActivity,
-                            "스팟 이름은 최대 15자까지 입력 가능합니다!", Toast.LENGTH_SHORT).show()
+                            "스팟 이름은 최대 10자까지 입력 가능합니다!", Toast.LENGTH_SHORT).show()
                         spotName.setText(txt)
                         spotName.setSelection(spotName.length())
-                        nametxtCount.setText("${spotName.length()} / 15")
+                        nametxtCount.setText("${spotName.length()} / 10")
                     }
-                    else if(spotName.length() < 15){
+                    else if(spotName.length() < 10){
                         nametxtCount.setTextColor(Color.GRAY)
-                        nametxtCount.setText("${spotName.length()} / 15")
+                        nametxtCount.setText("${spotName.length()} / 10")
+                    }
+
+                    if(spotName.lineCount > 1){
+                        Toast.makeText(this@AddSpotActivity,
+                            "스팟 이름은 1줄을 초과할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                        spotName.setText(txt)
+                        spotName.setSelection(spotName.length())
+                        nametxtCount.setText("${spotName.length()} / 10")
                     }
                 }
 
@@ -108,8 +127,8 @@ class AddSpotActivity: AppCompatActivity() {
                 }
             })
 
-            // spot description : 최대 150자 & 3줄
-            // 150자 이상이면 경고 알림
+            // spot description : 최대 100자 & 4줄
+            // 100자 이상이면 경고 알림
             spotDescription.addTextChangedListener(object:TextWatcher{
                 override fun beforeTextChanged(
                     s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -118,25 +137,25 @@ class AddSpotActivity: AppCompatActivity() {
 
                 override fun onTextChanged(
                     s: CharSequence?, start: Int, count: Int, after: Int) {
-                    if(spotDescription.length() > 150){
+                    if(spotDescription.length() > 100){
                         descriptiontxtCount.setTextColor(Color.RED)
                         Toast.makeText(this@AddSpotActivity,
-                            "스팟 설명은 최대 150자까지 입력 가능합니다!", Toast.LENGTH_SHORT).show()
+                            "스팟 설명은 최대 100자까지 입력 가능합니다!", Toast.LENGTH_SHORT).show()
                         spotDescription.setText(txt)
                         spotDescription.setSelection(spotDescription.length())
-                        descriptiontxtCount.setText("${spotDescription.length()} / 150")
+                        descriptiontxtCount.setText("${spotDescription.length()} / 100")
                     }
-                    else if(spotDescription.length() < 150){
+                    else if(spotDescription.length() < 100){
                         descriptiontxtCount.setTextColor(Color.GRAY)
-                        descriptiontxtCount.setText("${spotDescription.length()} / 150")
+                        descriptiontxtCount.setText("${spotDescription.length()} / 100")
                     }
 
-                    if(spotDescription.lineCount > 5){
+                    if(spotDescription.lineCount > 4){
                         Toast.makeText(this@AddSpotActivity,
-                            "스팟 설명은 최대 5줄까지 입력 가능합니다!", Toast.LENGTH_SHORT).show()
+                            "스팟 설명은 최대 4줄까지 입력 가능합니다!", Toast.LENGTH_SHORT).show()
                         spotDescription.setText(txt)
                         spotDescription.setSelection(spotDescription.length())
-                        descriptiontxtCount.setText("${spotDescription.length()} / 150")
+                        descriptiontxtCount.setText("${spotDescription.length()} / 100")
                     }
                 }
 
@@ -196,12 +215,6 @@ class AddSpotActivity: AppCompatActivity() {
             )
             option.title("스팟 추가 위치")//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
-
-            googleMap.setOnMapClickListener { latLng ->
-                // 클릭한 위치에 마커를 추가합니다.
-                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
-            }
-
             googleMap.setLatLngBoundsForCameraTarget(bounds)
         }
 
