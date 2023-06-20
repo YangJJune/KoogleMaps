@@ -16,16 +16,15 @@
         tools:layout_editor_absoluteY="1dp"
         android:gravity="center"
         tools:ignore="MissingConstraints">
-
-
         <EditText
-            android:id="@+id/idEdit"
+            android:id="@+id/emailedit"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:hint="ID"
+            android:hint="Email"
             android:ems="15"
             />
+
         <EditText
             android:id="@+id/passwordEdit"
             android:inputType="textPassword"
@@ -45,14 +44,13 @@
             android:ems="15"
             />
         <EditText
-            android:id="@+id/emailedit"
+            android:id="@+id/idEdit"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:hint="Email"
+            android:hint="닉네임"
             android:ems="15"
             />
-
         <Button
             android:id="@+id/registerBtn"
             android:layout_width="match_parent"
