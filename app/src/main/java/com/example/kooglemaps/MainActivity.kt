@@ -32,6 +32,13 @@ class MainActivity : AppCompatActivity() {
 
     }
     fun initLayout(){
+        binding.noLoginBtn.setOnClickListener {
+            val tmpIntent = Intent(this, MapActivity::class.java)
+            auth.signInAnonymously()
+            tmpIntent.putExtra("uid", "0")
+            Toast.makeText(this,"비회원으로 로그인 하셨습니다", Toast.LENGTH_SHORT).show()
+            launcher.launch(tmpIntent)
+        }
         binding.loginBtn.setOnClickListener {
             val email = binding.idEdit.text.toString()
             val pw = binding.passwordEdit.text.toString()

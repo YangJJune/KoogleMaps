@@ -23,6 +23,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +37,7 @@ class SpotActivity: AppCompatActivity() {
     var favoriteColor = "gray"
     var curSpotData = spotData()
     var uid = ""
+    private lateinit var auth: FirebaseAuth
 
     lateinit var googleMap: GoogleMap
 
@@ -42,6 +46,7 @@ class SpotActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
 
         binding = ActivitySpotBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -115,6 +120,10 @@ class SpotActivity: AppCompatActivity() {
                 // 누르지 않은 상태 : image source를 red로 변경하고, 숫자 증가
                 // 이미 누른 상태 : image source를 기본으로 변경하고, 숫자 감소
 
+                if(auth.currentUser?.isAnonymous == true){
+                    Toast.makeText(this@SpotActivity,"비회원은 이용이 불가합니다",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 var favoriteCount = favoriteNum.text.toString().toInt()
 
                 if(favoriteColor == "gray") {
@@ -144,6 +153,10 @@ class SpotActivity: AppCompatActivity() {
 
             addBtn.setOnClickListener {
                 // 리뷰 작성
+                if(auth.currentUser?.isAnonymous == true){
+                    Toast.makeText(this@SpotActivity,"비회원은 이용이 불가합니다",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 val builder = AlertDialog.Builder(this@SpotActivity)
                 val builderItem = AlertdialogEdittextBinding.inflate(layoutInflater)
                 val editText = builderItem.editText
