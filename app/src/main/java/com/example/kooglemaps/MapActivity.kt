@@ -9,6 +9,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
 import com.example.kooglemaps.AddSpotActivity
 import com.example.kooglemaps.R
 import com.example.kooglemaps.SpotActivity
@@ -49,6 +50,13 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
         //initspinner()
 
         initLayout()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        for(i in dbController.updatedMap){
+            allMarker.put(i.key, i.value)
+        }
     }
 
     private fun initLayout() {
@@ -195,8 +203,9 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
         i.putExtra("loc", marker.position.toString())
         //DB 연계 수정
         i.putExtra("desc", allMarker.get(marker.title)?.desc)
-        i.putExtra("favorite", allMarker.get(marker.title)?.likeUser)
+        i.putExtra("likeUser", allMarker.get(marker.title)?.likeUser as ArrayList<String>)
         i.putExtra("uid", intent.getStringExtra("uid").toString())
+        i.putExtra("spot", allMarker.get(marker.title))
         startActivity(i)
 
         return true
