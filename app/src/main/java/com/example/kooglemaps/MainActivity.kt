@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.kooglemaps.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -40,7 +42,25 @@ class MainActivity : AppCompatActivity() {
                      Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show()
                      launcher.launch(tmpIntent)
                  }else{
-                     Toast.makeText(this,task.exception.toString(), Toast.LENGTH_SHORT).show()
+                     if(task.exception is FirebaseAuthInvalidCredentialsException){
+                         val tmpException:FirebaseAuthInvalidCredentialsException = (task.exception as FirebaseAuthInvalidCredentialsException)!!
+                         Toast.makeText(this,tmpException.errorCode, Toast.LENGTH_SHORT).show()
+                         if(tmpException.errorCode.equals("ERROR_INVALID_EMAIL")){
+                             Toast.makeText(this, "아이디는 이메일이어야 합니다\n 다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
+                         }
+                         else{
+                             Toast.makeText(this, task.exception.toString()+"로그인 실패\n로그인 중에 문제가 발생하였습니다", Toast.LENGTH_SHORT).show()
+                         }
+                         //ERROR_INVALID_EMAIL
+                     }
+                     else if(task.exception is FirebaseAuthInvalidUserException){
+                         val tmpException:FirebaseAuthInvalidUserException = (task.exception as FirebaseAuthInvalidUserException)!!
+                         Toast.makeText(this, "로그인 정보가 잘못되었습니다.\n다시 한번 확인해주세요", Toast.LENGTH_SHORT).show()
+                     }
+
+                     else {
+                         Toast.makeText(this, task.exception.toString()+"로그인 실패, 로그인 중에 문제가 발생하였습니다", Toast.LENGTH_SHORT).show()
+                     }
                  }
             }
         }
