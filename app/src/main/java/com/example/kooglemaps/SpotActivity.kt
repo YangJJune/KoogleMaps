@@ -79,7 +79,6 @@ class SpotActivity: AppCompatActivity() {
                 val intent = Intent(this@SpotActivity, MapActivity::class.java)
                 startActivity(intent)
             }
-
             favoriteBtn.setOnClickListener {
                 // 좋아요 버튼 클릭 시 이벤트 처리
                 // 누르지 않은 상태 : image source를 red로 변경하고, 숫자 증가
