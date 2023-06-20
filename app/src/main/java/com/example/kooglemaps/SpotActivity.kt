@@ -169,7 +169,8 @@ class SpotActivity: AppCompatActivity() {
                 BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
             )
             option.title(title)//마커의 윗쪽 큰글씨
-            option.snippet(content)//마커의 아랫쪽 작은글씨
+            if(content != "")
+                option.snippet(content)//마커의 아랫쪽 작은글씨
             googleMap.addMarker(option)?.showInfoWindow()
 
             googleMap.setOnMapClickListener { latLng ->
@@ -180,6 +181,7 @@ class SpotActivity: AppCompatActivity() {
             googleMap.setLatLngBoundsForCameraTarget(bounds)
 
             binding.apply {
+                spotName.text = title
                 favoriteNum.text = like.size.toString()
                 spotDescription.text = desc
             }
