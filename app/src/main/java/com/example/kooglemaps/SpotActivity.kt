@@ -1,10 +1,8 @@
 package com.example.kooglemaps
 
-import android.app.ProgressDialog.show
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -23,13 +21,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 // spot icon 클릭 시 해당 spot 정보 띄우는 작업 수행
 class SpotActivity: AppCompatActivity() {
@@ -40,24 +34,43 @@ class SpotActivity: AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     lateinit var googleMap: GoogleMap
+    val dbCon = dbController()
 
     val data:ArrayList<spotData> = ArrayList()
-    lateinit var adapter: SpotDataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
+        title = intent.getStringExtra("title") as String
+        Log.v("title", title)
+        Log.e("hash", curSpotData.hashCode().toString())
 
         binding = ActivitySpotBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initLayout()
-        initEvent()
+//        CoroutineScope(Dispatchers.Main).launch{
+//            CoroutineScope(Dispatchers.IO).async{
+//                curSpotData = dbCon.getData(title)
+//            }.await()
+//            Log.e("hash", curSpotData.hashCode().toString())
+//        }
+        curSpotData = intent.getSerializableExtra("spot") as spotData
+        Log.i("title232", curSpotData.title)
+
         initmap()
-        initRecyclerView()
+        CoroutineScope(Dispatchers.Main).launch {
+            initLayout()
+            initEvent()
+            initRecyclerView()
+        }
     }
 
-    private fun initRecyclerView() {
+    override fun onStop() {
+        super.onStop()
+        dbCon.setData(curSpotData)
+    }
+
+    suspend fun initRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.VERTICAL, false)
         // 어댑터 객체 생성 후 초기화
@@ -70,18 +83,25 @@ class SpotActivity: AppCompatActivity() {
         )
     }
 
-    fun initLayout() {
+    suspend fun initLayout() {
         // intent를 통해 장소의 id 전달 받고,
         // 해당 장소의 DB정보 불러와서 화면에 띄우는 작업 수행
         val title = intent.getStringExtra("title")
         val desc = intent.getStringExtra("desc")
-        var likeList = intent.getStringArrayListExtra("favorite")
-        if(likeList == null){
-            likeList = ArrayList<String>()
-        }
+        CoroutineScope(Dispatchers.IO).async {
+            curSpotData = dbCon.getData(title!!)
+        }.await()
+        Log.v("async", curSpotData.title)
+        if(curSpotData.title == null)
+            return
+
+        var likeList = curSpotData.likeUser
+        Log.d("likeSize", likeList?.size.toString())
+
+
 
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
-        uid = intent.getStringExtra("uid").toString()
+        uid = Firebase.auth.uid.toString()
         Log.i("uid", uid)
         Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
 
@@ -105,7 +125,7 @@ class SpotActivity: AppCompatActivity() {
         }
     }
 
-    fun initEvent(){
+    suspend fun initEvent(){
         binding.apply {
             goBackBtn.setOnClickListener {
                 // 뒤로가기 버튼 클릭 시 이벤트 처리
@@ -133,9 +153,11 @@ class SpotActivity: AppCompatActivity() {
                     favoriteColor = "red"
 
                     /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-                    if(curSpotData.likeUser!!.contains(uid)){
-                        curSpotData.likeUser!!.remove(uid)
+                    if(!curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.add(uid)
                     }
+                    //Log.d("size", curSpotData.likeUser.size.toString())
+
 
                 }
                 else if(favoriteColor == "red"){
@@ -145,9 +167,10 @@ class SpotActivity: AppCompatActivity() {
                     favoriteColor = "gray"
 
                     /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-                    if(!curSpotData.likeUser!!.contains(uid)){
-                        curSpotData.likeUser!!.add(uid)
+                    if(curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.remove(uid)
                     }
+
                 }
             }
 
@@ -165,9 +188,10 @@ class SpotActivity: AppCompatActivity() {
                     setIcon(R.drawable.baseline_add_comment_24)
                     setMessage("한 줄 평을 입력해주세요")
                     setView(builderItem.root)
-                    setPositiveButton("추가"){dialogInterface:DialogInterface, i:Int ->
+                    setPositiveButton("추가"){ dialogInterface: DialogInterface, i:Int ->
                         if(editText.text!=null)
                             Toast.makeText(this@SpotActivity, "한 줄 평 추가 완료", Toast.LENGTH_SHORT).show()
+                        curSpotData.review.add(editText.text.toString())
                     }
                     setNegativeButton("취소", null)
                     show()
@@ -179,6 +203,13 @@ class SpotActivity: AppCompatActivity() {
     private fun initmap() {
         val loc = intent.getStringExtra("loc")
         val title = intent.getStringExtra("title")
+        val content = intent.getStringExtra("content")
+        //lat/lng: (37.542402,127.076903) 로 나온다.
+        val desc = intent.getStringExtra("desc")
+        var like = intent.getStringArrayListExtra("desc")
+        if(like == null){
+            like = ArrayList<String>()
+        }
 
         val regex = Regex("""\d+\.\d+""")
         val matches = regex.findAll(loc!!)
@@ -225,7 +256,19 @@ class SpotActivity: AppCompatActivity() {
             )
             option.title(title)//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
+
+            googleMap.setOnMapClickListener { latLng ->
+                // 클릭한 위치에 마커를 추가합니다.
+                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
+            }
+
             googleMap.setLatLngBoundsForCameraTarget(bounds)
+
+            binding.apply {
+                spotName.text = title
+                spotDescription.text = desc
+            }
         }
+
     }
 }

@@ -16,25 +16,12 @@ import kotlinx.coroutines.tasks.await
     - 그걸로 업데이트 된 count만큼 최신 데이터 불러오기
 */
 class dbController (){
-    companion object{   //static 변수,함수
-        var updatedCount = 0;
-        val removedKey = HashSet<String>()
-
-        fun countIncrement(){
-            updatedCount++
-        }
-        fun resetCount(){
-            updatedCount = 0
-        }
-        fun getCount() : Int{
-            return updatedCount
-        }
-    }
 
     val DBConnect = Firebase.database
     val spotTable = DBConnect.getReference("spotDB")
     val allDBMap = HashMap<String, spotData>()
     val updatedMap = HashMap<String, spotData>()
+    val removedKey = HashMap<String, spotData>()
     //val userTable = DBConnect.getReference("userDB")
 
 
@@ -91,6 +78,10 @@ class dbController (){
                 Log.v("String", title)
                 updatedMap.put(title, returnData)
                 allDBMap.put(title, returnData)
+
+                tags.clear()
+                review.clear()
+                likes.clear()
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -123,17 +114,21 @@ class dbController (){
                 Log.v("String", title)
                 updatedMap.put(title, returnData)
                 allDBMap.put(title, returnData)
+
+                tags.clear()
+                review.clear()
+                likes.clear()
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                try {
-                    val removed = snapshot.child("title").value as String
-                    removedKey.add(removed)
-                    Log.d("DBtest", removed)
-                }catch (e: Exception){
-                    Log.e("DBError", e.toString())
-                }
-                Log.e("DB", "Removed")
+//                try {
+//                    val removed = snapshot.child("title").value as String
+//                    removedKey.add(removed)
+//                    Log.d("DBtest", removed)
+//                }catch (e: Exception){
+//                    Log.e("DBError", e.toString())
+//                }
+//                Log.e("DB", "Removed")
             }
             //삭제된 spot들 파악
 
@@ -153,9 +148,9 @@ class dbController (){
         for(i in returnMap.iterator()){
             allDBMap.put(i.key, i.value)
         }
-        for(i in removedKey){
-            allDBMap.remove(i)
-        }
+//        for(i in removedKey){
+//            allDBMap.remove(i)
+//        }
 
         updatedMap.clear()
         return returnMap
@@ -197,6 +192,10 @@ class dbController (){
             val returnData = spotData(title, cord1, cord2, desc, tags, review, likes)
 
             allDBMap.put(title ,returnData)
+
+            tags.clear()
+            review.clear()
+            likes.clear()
         }
         Log.d("DB", "in DB")
         return allDBMap
@@ -220,9 +219,17 @@ class dbController (){
         val cord1 = temp.child("cord1").value as Double
         val cord2 = temp.child("cord2").value as Double
         try {
-            tags = temp.child("tags").value as ArrayList<String>
-            review = temp.child("review").value as ArrayList<String>
-            likes = temp.child("likeUser").value as ArrayList<String>
+            for(i in temp.child("tags").children) {
+                tags.add(i.value as String)
+            }
+            for(i in temp.child("review").children) {
+                review.add(i.value as String)
+            }
+            for(i in temp.child("likeUser").children) {
+                likes.add(i.value as String)
+                Log.v("Like Data", i.value as String)
+            }
+            Log.v("in DB like", likes.size.toString())
         }catch (E : java.lang.Exception){       //if ArrayList is null
 
         }
