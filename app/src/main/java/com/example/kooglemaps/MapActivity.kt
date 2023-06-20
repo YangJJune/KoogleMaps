@@ -19,10 +19,17 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener{
     lateinit var binding: ActivtyMapBinding
     lateinit var googleMap: GoogleMap
+
+    val dbController = dbController()
+    lateinit var allMarker:HashMap<String, spotData>    //전체 marker Data
 
     private var clickedMarker: Marker ?= null
 
@@ -46,7 +53,6 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
 
     private fun initLayout() {
         binding.btnFab.setOnClickListener {
-
         }
     }
 
@@ -140,6 +146,19 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
             }
             */
 
+            CoroutineScope(Dispatchers.Main).launch {
+                CoroutineScope(Dispatchers.IO).async {
+                    allMarker = dbController.getAllData()
+                }.await()
+                for(i in allMarker){
+                    val value = i.value
+                    val marker = MarkerOptions()
+                    marker.position(LatLng(value.cord1, value.cord2))
+                    marker.title(value.title)
+                    googleMap.addMarker(marker)
+                }
+            }
+
 
             //맵 마커
             val option = MarkerOptions()
@@ -174,6 +193,9 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
         i.putExtra("title", marker.title.toString())
         i.putExtra("content", marker.snippet.toString())
         i.putExtra("loc", marker.position.toString())
+        //DB 연계 수정
+        i.putExtra("desc", allMarker.get(marker.title)?.desc)
+        i.putExtra("favorite", allMarker.get(marker.title)?.likeUser)
 
         startActivity(i)
 

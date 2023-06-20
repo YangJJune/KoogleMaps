@@ -65,9 +65,23 @@ class AddSpotActivity: AppCompatActivity() {
                 // 전부 다 입력 됐으면 DB로 정보 넘기고 지도 화면으로 복귀
                 else{
                     val DBcontroller = dbController()
+                    val loc = intent.getStringExtra("loc")
+
+                    val regex = Regex("""\d+\.\d+""")
+                    val matches = regex.findAll(loc!!)
+                    val numbers = matches.map { it.value }.toList()
+
+                    var x :Double = 0.0
+                    var y :Double = 0.0
+
+                    if (numbers.size == 2) {
+                        x= numbers[0].toDouble()
+                        y= numbers[1].toDouble()
+                    }
+
                     DBcontroller.setData(
-                        spotData(spotName.text.toString(), 1.0, 2.0,
-                            spotDescription.text.toString(), null, null, null )
+                        spotData(spotName.text.toString(), x, y,
+                            spotDescription.text.toString())
                     )
 
                     val intent = Intent(this@AddSpotActivity, MapActivity::class.java)
