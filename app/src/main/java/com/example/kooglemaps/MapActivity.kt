@@ -8,6 +8,8 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.example.kooglemaps.AddSpotActivity
 import com.example.kooglemaps.R
@@ -27,6 +29,7 @@ import kotlinx.coroutines.launch
 class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener{
     lateinit var binding: ActivtyMapBinding
     lateinit var googleMap: GoogleMap
+    private lateinit var getResult:ActivityResultLauncher<Intent>
 
     val dbController = dbController()
     lateinit var allMarker:HashMap<String, spotData>    //전체 marker Data
@@ -44,6 +47,24 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
         binding = ActivtyMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //init Launcher
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                val x = it.data?.getDoubleExtra("x",0.0)
+                val y = it.data?.getDoubleExtra("y",0.0)
+
+                if(x==0.0 || y==0.0){
+                    return@registerForActivityResult;
+                }
+
+                val tmpLoc = LatLng(x!!,y!!)
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tmpLoc,18.0f))
+            }
+            else if(it.resultCode== RESULT_CANCELED){
+                //nothing
+            }
+        }
+
         initmap()
 
         //initspinner()
@@ -52,7 +73,12 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
     }
 
     private fun initLayout() {
+
         binding.btnFab.setOnClickListener {
+        }
+        binding.btnFind.setOnClickListener{
+            val i = Intent(this, SearchActivity::class.java)
+            getResult.launch(i)
         }
     }
 
