@@ -34,30 +34,30 @@ class SpotActivity: AppCompatActivity() {
         binding = ActivitySpotBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //initLayout()
+        initLayout()
         initEvent()
         initmap()
     }
 
-//    fun initLayout() {
-//        // intent를 통해 장소의 id 전달 받고,
-//        // 해당 장소의 DB정보 불러와서 화면에 띄우는 작업 수행
-//        CoroutineScope(Dispatchers.IO).launch {
-//            curSpotData = DBcontroller.getData("test")
-//        }
-//
-//        // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
+    fun initLayout() {
+        // intent를 통해 장소의 id 전달 받고,
+        // 해당 장소의 DB정보 불러와서 화면에 띄우는 작업 수행
+        val title = intent.getStringExtra("title")
+        val desc = intent.getStringExtra("desc")
+        var likeList = intent.getStringArrayListExtra("favorite")
+        if(likeList == null){
+            likeList = ArrayList<String>()
+        }
+
+        // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
 //        uid = intent.getStringExtra("uid").toString()
 //        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
 //
 //        // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
-//        var like = curSpotData.likeUser!!.contains(uid)
-//        var likeCount = curSpotData.likeUser!!.size
-//
-//        // 있으면 빨간 하트로 설정 & 없으면 회색으로 설정
-//        binding.apply {
-//            spotName.setText(curSpotData.title)
-//            spotDescription.setText(curSpotData.desc)
+//        var like = likeList!!.contains(uid)
+
+        // 있으면 빨간 하트로 설정 & 없으면 회색으로 설정
+        binding.apply {
 //            if(like){
 //                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
 //                favoriteColor = "red"
@@ -66,9 +66,13 @@ class SpotActivity: AppCompatActivity() {
 //                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
 //                favoriteColor = "gray"
 //            }
-//            favoriteNum.setText(likeCount)
-//        }
-//    }
+            //favoriteNum.setText(likeCount)
+
+            spotName.text = title
+            favoriteNum.text = likeList.size.toString()
+            spotDescription.text = desc
+        }
+    }
 
     fun initEvent(){
         binding.apply {
@@ -76,9 +80,10 @@ class SpotActivity: AppCompatActivity() {
                 // 뒤로가기 버튼 클릭 시 이벤트 처리
                 // 이전 화면(구글 맵 화면)으로 이동
                 /* 임시로 로그인 화면으로 이동하는 걸로 구현 */
-                val intent = Intent(this@SpotActivity, MapActivity::class.java)
+                val intent = Intent(this@SpotActivity, MainActivity::class.java)
                 startActivity(intent)
             }
+
             favoriteBtn.setOnClickListener {
                 // 좋아요 버튼 클릭 시 이벤트 처리
                 // 누르지 않은 상태 : image source를 red로 변경하고, 숫자 증가
@@ -116,13 +121,6 @@ class SpotActivity: AppCompatActivity() {
     private fun initmap() {
         val loc = intent.getStringExtra("loc")
         val title = intent.getStringExtra("title")
-        val content = intent.getStringExtra("content")
-        //lat/lng: (37.542402,127.076903) 로 나온다.
-        val desc = intent.getStringExtra("desc")
-        var like = intent.getStringArrayListExtra("desc")
-        if(like == null){
-            like = ArrayList<String>()
-        }
 
         val regex = Regex("""\d+\.\d+""")
         val matches = regex.findAll(loc!!)
@@ -168,8 +166,6 @@ class SpotActivity: AppCompatActivity() {
                 BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
             )
             option.title(title)//마커의 윗쪽 큰글씨
-            if(content != "")
-                option.snippet(content)//마커의 아랫쪽 작은글씨
             googleMap.addMarker(option)?.showInfoWindow()
 
             googleMap.setOnMapClickListener { latLng ->
@@ -179,12 +175,7 @@ class SpotActivity: AppCompatActivity() {
 
             googleMap.setLatLngBoundsForCameraTarget(bounds)
 
-            binding.apply {
-                spotName.text = title
-                favoriteNum.text = like.size.toString()
-                spotDescription.text = desc
-            }
-        }
 
+        }
     }
 }
