@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
                          else{
                              Toast.makeText(this, task.exception.toString()+"로그인 실패\n로그인 중에 문제가 발생하였습니다", Toast.LENGTH_SHORT).show()
                          }
-                         //ERROR_INVALID_EMAIL
                      }
                      else if(task.exception is FirebaseAuthInvalidUserException){
                          val tmpException:FirebaseAuthInvalidUserException = (task.exception as FirebaseAuthInvalidUserException)!!
