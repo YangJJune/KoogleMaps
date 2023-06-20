@@ -51,10 +51,6 @@ class AddSpotActivity: AppCompatActivity() {
                         "스팟 이름은 필수로 입력해야 합니다!", Toast.LENGTH_SHORT).show()
                 }
 
-                // 지도 위치 선택했는지 확인
-                //else if(){
-                // }
-
                 // 스팟 설명 입력했는지 확인
                 else if(spotDescription.text.toString().equals("")||spotDescription.text.toString()==null
                     ||spotDescription.text.toString().replace(" ", "").equals("")){
@@ -218,12 +214,6 @@ class AddSpotActivity: AppCompatActivity() {
             )
             option.title("스팟 추가 위치")//마커의 윗쪽 큰글씨
             googleMap.addMarker(option)?.showInfoWindow()
-
-            googleMap.setOnMapClickListener { latLng ->
-                // 클릭한 위치에 마커를 추가합니다.
-                googleMap.addMarker(MarkerOptions().position(latLng).title("Clicked Marker"))
-            }
-
             googleMap.setLatLngBoundsForCameraTarget(bounds)
         }
 

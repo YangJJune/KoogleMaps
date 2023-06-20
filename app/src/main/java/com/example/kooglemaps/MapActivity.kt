@@ -196,7 +196,7 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener, Google
         //DB 연계 수정
         i.putExtra("desc", allMarker.get(marker.title)?.desc)
         i.putExtra("favorite", allMarker.get(marker.title)?.likeUser)
-
+        i.putExtra("uid", intent.getStringExtra("uid").toString())
         startActivity(i)
 
         return true

@@ -62,7 +62,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="15dp"
                 android:textSize="20sp"
-                android:text="스팟이름이잘보일까요"
+                android:text=""
                 android:textStyle="bold"/>
 
             <ImageButton
@@ -109,7 +109,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="18sp"
-            android:text="스팟설명은몇글자까지잘보일까요한줄에스무글자는보이려나요??이런식이면200글자는힘들거같은데..스팟설명은몇글자까지잘보일까요한줄에스무글자는보이려나요??이런식이면200글자는힘들거같은데.."
+            android:text=""
             android:textStyle="bold"/>
 
         <View
@@ -133,7 +133,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"/>
+            android:layout_weight="6"/>
     </LinearLayout>
 
 

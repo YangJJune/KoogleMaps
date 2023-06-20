@@ -2,6 +2,7 @@ package com.example.kooglemaps
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kooglemaps.databinding.ActivityRegisterBinding
@@ -22,7 +23,6 @@ import kotlinx.coroutines.withContext
 class SpotActivity: AppCompatActivity() {
     lateinit var binding: ActivitySpotBinding
     var favoriteColor = "gray"
-    val DBcontroller = dbController()
     var curSpotData = spotData()
     var uid = ""
 
@@ -50,23 +50,23 @@ class SpotActivity: AppCompatActivity() {
         }
 
         // 현재 로그인한 user 정보 불러옴 => 좋아요 표시에 이용
-//        uid = intent.getStringExtra("uid").toString()
-//        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
-//
-//        // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
-//        var like = likeList!!.contains(uid)
+        uid = intent.getStringExtra("uid").toString()
+        Log.i("uid", uid)
+        Toast.makeText(this@SpotActivity, uid, Toast.LENGTH_SHORT).show()
+
+        // spotDB의 좋아요 누른 uid 리스트에 현재 로그인 된 user의 id 있는지 탐색
+        var like = likeList.contains(uid)
 
         // 있으면 빨간 하트로 설정 & 없으면 회색으로 설정
         binding.apply {
-//            if(like){
-//                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
-//                favoriteColor = "red"
-//            }
-//            else{
-//                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
-//                favoriteColor = "gray"
-//            }
-            //favoriteNum.setText(likeCount)
+            if(like){
+                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
+                favoriteColor = "red"
+            }
+            else{
+                favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
+                favoriteColor = "gray"
+            }
 
             spotName.text = title
             favoriteNum.text = likeList.size.toString()
@@ -91,29 +91,29 @@ class SpotActivity: AppCompatActivity() {
 
                 var favoriteCount = favoriteNum.text.toString().toInt()
 
-//                if(favoriteColor == "gray") {
-//                    // 누르지 않은 상태에서 클릭 (gray=>red)
-//                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
-//                    favoriteNum.setText("${++favoriteCount}")
-//                    favoriteColor = "red"
-//
-//                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-//                    if(curSpotData.likeUser!!.contains(uid)){
-//                        curSpotData.likeUser!!.remove(uid)
-//                    }
-//
-//                }
-//                else if(favoriteColor == "red"){
-//                    // 누른 상태에서 클릭 (red=>gray)
-//                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
-//                    favoriteNum.setText("${--favoriteCount}")
-//                    favoriteColor = "gray"
-//
-//                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
-//                    if(!curSpotData.likeUser!!.contains(uid)){
-//                        curSpotData.likeUser!!.add(uid)
-//                    }
-//                }
+                if(favoriteColor == "gray") {
+                    // 누르지 않은 상태에서 클릭 (gray=>red)
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24_red)
+                    favoriteNum.setText("${++favoriteCount}")
+                    favoriteColor = "red"
+
+                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
+                    if(curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.remove(uid)
+                    }
+
+                }
+                else if(favoriteColor == "red"){
+                    // 누른 상태에서 클릭 (red=>gray)
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24)
+                    favoriteNum.setText("${--favoriteCount}")
+                    favoriteColor = "gray"
+
+                    /* SpotDB의 좋아요 수 및 좋아요 누른 uid 리스트 수정 */
+                    if(!curSpotData.likeUser!!.contains(uid)){
+                        curSpotData.likeUser!!.add(uid)
+                    }
+                }
             }
         }
     }
