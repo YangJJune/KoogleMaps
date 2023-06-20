@@ -38,7 +38,7 @@ class AddSpotActivity: AppCompatActivity() {
                 /* 뒤로가기 버튼 클릭 시 이벤트 처리 */
                 // 이전 화면(구글 맵 화면)으로 이동
                 /* 임시로 로그인 화면으로 이동하는 걸로 구현 */
-                val intent = Intent(this@AddSpotActivity, MainActivity::class.java)
+                val intent = Intent(this@AddSpotActivity, MapActivity::class.java)
                 startActivity(intent)
             }
 
@@ -84,7 +84,7 @@ class AddSpotActivity: AppCompatActivity() {
                             spotDescription.text.toString())
                     )
 
-                    val intent = Intent(this@AddSpotActivity, MainActivity::class.java)
+                    val intent = Intent(this@AddSpotActivity, MapActivity::class.java)
                     startActivity(intent)
                 }
             }
