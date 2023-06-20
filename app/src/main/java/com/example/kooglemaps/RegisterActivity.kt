@@ -31,12 +31,11 @@ class RegisterActivity:AppCompatActivity() {
         auth = Firebase.auth
         registerBinding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(registerBinding.root)
-        Toast.makeText(this,"11",Toast.LENGTH_SHORT).show()
+
         registerBinding.registerBtn.setOnClickListener {
 
             val email:String = registerBinding.emailedit.text.toString()
             val pw:String = registerBinding.passwordEdit.text.toString()
-            val nickname:String = registerBinding.idEdit.text.toString()
 
             if(pw.equals(registerBinding.passwordEdit2.text.toString())) {
                 auth.createUserWithEmailAndPassword(email,pw).addOnCompleteListener(this) { task->
@@ -52,6 +51,9 @@ class RegisterActivity:AppCompatActivity() {
                         if(task.exception!! is FirebaseAuthUserCollisionException){
                             val tmpException:FirebaseAuthUserCollisionException = (task.exception as FirebaseAuthUserCollisionException?)!!
                             when(tmpException.errorCode){
+                                "ERROR_INVALID_EMAIL"->{
+                                    Toast.makeText(this,"올바른 이메일이 아닙니다",Toast.LENGTH_SHORT).show()
+                                }
                                 "ERROR_EMAIL_ALREADY_IN_USE" ->{
                                     Toast.makeText(this,"이미 사용 중인 email입니다. 다른 email을 사용해주세요",Toast.LENGTH_SHORT).show()
                                 }
@@ -65,7 +67,10 @@ class RegisterActivity:AppCompatActivity() {
                             Log.d("error",tmpException.errorCode)
                             when(tmpException.errorCode){
                                 "ERROR_INVALID_EMAIL" ->{
-
+                                    Toast.makeText(this,"올바른 형태의 이메일이 아닙니다",Toast.LENGTH_SHORT).show()
+                                }
+                                "ERROR_WEAK_PASSWORD" ->{
+                                    Toast.makeText(this,"올바른 형태의 비밀번호가 아닙니다",Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -75,7 +80,9 @@ class RegisterActivity:AppCompatActivity() {
                     }
                 }
             }
-
+            else{
+                Toast.makeText(this,"PW가 PW확인과 동일하지 않습니다",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

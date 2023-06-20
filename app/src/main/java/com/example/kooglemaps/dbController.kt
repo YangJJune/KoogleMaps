@@ -130,8 +130,6 @@ class dbController (){
             allDBMap.remove(i)
         }
 
-
-
         updatedMap.clear()
         return returnMap
     }
