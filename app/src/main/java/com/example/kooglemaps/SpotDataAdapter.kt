@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.kooglemaps.databinding.RowBinding
 import com.example.kooglemaps.databinding.RowcommentBinding
 
-class SpotDataAdapter(val items:ArrayList<spotData>)
+class SpotDataAdapter(val items:ArrayList<String>)
     : RecyclerView.Adapter<SpotDataAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: RowcommentBinding):RecyclerView.ViewHolder(binding.root){
@@ -30,6 +30,6 @@ class SpotDataAdapter(val items:ArrayList<spotData>)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // textView의 text 정보 받음
-        holder.binding.textView.text = items[position].review.toString()
+        holder.binding.textView.text = items[position]
     }
 }

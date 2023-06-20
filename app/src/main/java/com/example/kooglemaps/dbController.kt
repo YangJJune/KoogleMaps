@@ -5,6 +5,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.values
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -79,7 +80,8 @@ class dbController (){
                     cord2 = temp.child("cord2").value as Double
                     tags = temp.child("tags").value as ArrayList<String>
                     review = temp.child("review").value as ArrayList<String>
-                    likes = temp.child("likes").value as ArrayList<String>
+                    likes = temp.child("likeUser").value as ArrayList<String>
+                    Log.v("in DB like", likes.size.toString())
                 }catch (E : java.lang.Exception){       //if ArrayList is null
 
                 }
@@ -88,13 +90,39 @@ class dbController (){
                 returnData = spotData(title, cord1, cord2, desc, tags, review, likes)
                 Log.v("String", title)
                 updatedMap.put(title, returnData)
+                allDBMap.put(title, returnData)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
 //                countIncrement()
 //                Log.e("DB", "Change")
 
-                allDBMap
+                lateinit var returnData:spotData
+                val temp = snapshot
+                var tags = ArrayList<String>()
+                var review = ArrayList<String>()
+                var likes = ArrayList<String>()
+                var cord1 = 0.0
+                var cord2 = 0.0
+                Log.d("changed", snapshot.key.toString())
+
+                val title = temp.child("title").value as String
+                try {
+                    cord1 = temp.child("cord1").value as Double
+                    cord2 = temp.child("cord2").value as Double
+                    tags = temp.child("tags").value as ArrayList<String>
+                    review = temp.child("review").value as ArrayList<String>
+                    likes = temp.child("likeUser").value as ArrayList<String>
+                    Log.v("in DB like", likes.size.toString())
+                }catch (E : java.lang.Exception){       //if ArrayList is null
+
+                }
+                val desc = temp.child("desc").value as String
+
+                returnData = spotData(title, cord1, cord2, desc, tags, review, likes)
+                Log.v("String", title)
+                updatedMap.put(title, returnData)
+                allDBMap.put(title, returnData)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -150,9 +178,17 @@ class dbController (){
             try {
                 cord1 = temp.child("cord1").value as Double
                 cord2 = temp.child("cord2").value as Double
-                tags = temp.child("tags").value as ArrayList<String>
-                review = temp.child("review").value as ArrayList<String>
-                likes = temp.child("likes").value as ArrayList<String>
+                for(i in temp.child("tags").children) {
+                    tags.add(i.value as String)
+                }
+                for(i in temp.child("review").children) {
+                    review.add(i.value as String)
+                }
+                for(i in temp.child("likeUser").children) {
+                    likes.add(i.value as String)
+                    Log.v("Like Data", i.value as String)
+                }
+                Log.v("in DB like", likes.size.toString())
             }catch (E : java.lang.Exception){       //if ArrayList is null
 
             }
@@ -186,7 +222,7 @@ class dbController (){
         try {
             tags = temp.child("tags").value as ArrayList<String>
             review = temp.child("review").value as ArrayList<String>
-            likes = temp.child("likes").value as ArrayList<String>
+            likes = temp.child("likeUser").value as ArrayList<String>
         }catch (E : java.lang.Exception){       //if ArrayList is null
 
         }
@@ -200,5 +236,14 @@ class dbController (){
 
     fun setData(d:spotData){    //key value 찾지 못할 시 insert 있으면 update
         spotTable.child(d.title).setValue(d)
+    }
+
+    suspend fun removeLike(title:String, uid:String){
+        lateinit var snapshot:DataSnapshot
+        withContext(Dispatchers.IO){
+            snapshot = spotTable.child(title).get().await()
+        }
+
+        snapshot.child("likeUser").child(uid).value
     }
 }
